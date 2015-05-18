@@ -1,0 +1,47 @@
+#!/bin/bash
+
+set -e
+
+source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/common
+
+BUILD_DIR=${OPENSHIFT_TMP_DIR}build/
+NGINX_DIR=${OPENSHIFT_RUNTIME_DIR}nginx/
+PHP_DIR=${OPENSHIFT_RUNTIME_DIR}php5/
+TEMPLATE_DIR=${OPENSHIFT_REPO_DIR}.openshift/tmpl/
+PHPMYADMIN_DIR=${OPENSHIFT_RUNTIME_DIR}www/phpMyAdmin/
+
+umask 077
+
+mkdir -p ${BUILD_DIR}
+
+echo "Pre-processing nginx config."
+cp ${TEMPLATE_DIR}/nginx.conf.tmpl ${BUILD_DIR}/nginx.conf
+perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' ${BUILD_DIR}/nginx.conf
+cp ${BUILD_DIR}/nginx.conf ${NGINX_DIR}/conf/nginx.conf
+
+echo "Pre-processing PHP-fpm config."
+cp ${TEMPLATE_DIR}/php-fpm.conf.tmpl ${BUILD_DIR}/php-fpm.conf
+perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' ${BUILD_DIR}/php-fpm.conf
+cp ${BUILD_DIR}/php-fpm.conf ${PHP_DIR}/etc/php-fpm.conf
+
+echo "Pre-processing phpmyadmin config."
+cp ${TEMPLATE_DIR}/config.inc.php.tmpl ${BUILD_DIR}/config.inc.php
+perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' ${BUILD_DIR}/config.inc.php
+cp ${BUILD_DIR}/config.inc.php ${PHPMYADMIN_DIR}/config.inc.php
+
+cp ${TEMPLATE_DIR}/AuthenticationCookie.class.php.tmpl ${BUILD_DIR}/AuthenticationCookie.class.php
+perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' ${BUILD_DIR}/AuthenticationCookie.class.php
+cp ${BUILD_DIR}/AuthenticationCookie.class.php ${PHPMYADMIN_DIR}/libraries/plugins/auth/AuthenticationCookie.class.php
+
+echo "Pre-processing Django config."
+mkdir -p ${BUILD_DIR}
+cp ${TEMPLATE_DIR}/settings.py.tmpl ${BUILD_DIR}/settings.py
+perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' ${BUILD_DIR}/settings.py
+cp ${BUILD_DIR}/settings.py ${OPENSHIFT_REPO_DIR}wsgi/${DJANGO_SITE_NAME}/${DJANGO_SITE_NAME}/
+
+echo "Pre-processing uWSGI config... "
+cp ${TEMPLATE_DIR}/uwsgi.ini.tmpl ${BUILD_DIR}/uwsgi.ini
+perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' ${BUILD_DIR}/uwsgi.ini
+cp ${BUILD_DIR}/uwsgi.ini $CONFIG_DIR/uwsgi.ini
+
+rm -rf ${BUILD_DIR}

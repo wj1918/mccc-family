@@ -1,0 +1,112 @@
+#!/bin/bash
+
+# Exit on first error.
+set -e
+
+# OpenShift sets GIT_DIR to . which terminates pull with an error:
+# Not a git repository: '.'
+unset GIT_DIR
+
+umask 077
+
+# Load common
+source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/common
+
+# Configure versions
+NGINX_VERSION='1.6.2'
+ZLIB_VERSION='1.2.8'
+PCRE_VERSION='8.34'
+
+PHP_VERSION='5.6.2'
+ICU_VERSION='53.1'
+
+LIBMCRYPT_VERSION='2.5.8'
+LIBTOOL_VERSION='2.4.2'
+
+NODE_VERSION='0.6.20' #'0.10.26'
+
+PYTHON3_VERSION="3.4.2"
+PYTHON2_VERSION="2.7.8"
+PHPMYADMIN_VERSION="4.2.8"
+
+declare -A PHP_PECL
+declare -A PHP_PECL_CONFIGURE
+PHP_PECL=( ["mongo"]='1.5.1' )
+PHP_PECL_CONFIGURE=( )
+
+# Try to guess the number of processors from /proc/cpuinfo.
+if [ -f /proc/cpuinfo ]; then
+    NUMBER_OF_PROCESSORS=$(grep -c ^processor /proc/cpuinfo)
+else
+    NUMBER_OF_PROCESSORS=1
+fi
+
+# Load functions
+source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_nginx
+source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_php_libs
+source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_mdbtools
+source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_php
+source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_node
+source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_python${OPENSHIFT_PYTHON_VERSION}
+source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_uwsgi
+source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_django
+source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_phpmyadmin
+
+# Check nginx
+check_nginx
+
+# Check glib2
+check_glib2
+
+# Check mdbtools
+check_mdbtools
+
+if [ "$BUILD_PHP_FROM_SOURCE" == "Yes" ]; then
+
+	# Check PHP
+	check_php
+
+	# Check pecl extensions
+	for ext in "${!PHP_PECL[@]}"; do
+	    check_pecl ${ext} ${PHP_PECL["$ext"]} ${PHP_PECL_CONFIGURE["$ext"]};
+	done
+else
+    echo "Use installed php"
+    
+	if which php; then 
+        ln -fs `which php` ${ROOT_DIR}/php5/bin/php
+    fi
+    
+	if which php5-fpm; then 
+	  ln -fs `which php5-fpm` ${ROOT_DIR}/php5/sbin/php-fpm 
+    fi
+
+	if which php-fpm; then 
+	  ln -fs `which php5-fpm`  ${ROOT_DIR}/php5/sbin/php-fpm 
+    fi
+fi
+
+# Check NodeJS
+# check_node
+
+# check python
+check_python${OPENSHIFT_PYTHON_VERSION}
+
+# check pip2 env
+check_pip${OPENSHIFT_PYTHON_VERSION}
+
+# check virtual env
+check_venv${OPENSHIFT_PYTHON_VERSION}
+
+# check uwsgi
+check_uwsgi
+
+# check phpmyadmin
+check_phpmyadmin
+
+# install requirement
+install_requirements${OPENSHIFT_PYTHON_VERSION}
+
+# check django
+check_django
+

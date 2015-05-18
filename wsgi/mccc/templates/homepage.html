@@ -1,0 +1,34 @@
+{% extends "site_base.html" %}
+
+{% block head_title %}MCCC{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+{% block body_base %}
+    <section class="jumbotron">
+        <div class="container">
+            {% include "_messages.html" %}
+            <h2 class="text-center">Welcome To MCCC Family</h2>
+            {% if not user.is_authenticated %}
+                {% include "_social_login.html" %}
+            {% else %} 
+                <div class="jumbotron text-center">
+                    <div class="well" style="max-width: 600px; margin: 0 auto 10px;">
+                        {% if perms.family %}
+                            <p><a class="btn btn-primary btn-lg btn-block" href="admin/family/person/" role="button">Manage Family Database</a></p>
+                        {% endif %}
+                        {% if perms.children %}
+                            <p><a class="btn btn-primary btn-lg btn-block" href="children/children/cmmaster/" role="button">Search Children Database</a></p>
+                        {% endif %}
+                        {% if perms.member %}
+                            <p><a class="btn btn-primary btn-lg btn-block" href="member/member/mcccdir/" role="button">Member Directory</a></p>
+                        {% endif %}
+                        {% if perms.library %}
+                            <p><a class="btn btn-primary btn-lg btn-block" href="library/library/mccclibrary/" role="button">Library Catalog</a></p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

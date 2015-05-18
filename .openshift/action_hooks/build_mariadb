@@ -1,0 +1,56 @@
+#!/bin/bash
+function install_bison()
+{
+    # build bison
+    mkdir -p ${BUILD_DIR}
+    pushd ${BUILD_DIR}
+    rm -rf bison-3.0.2
+    wget http://ftp.gnu.org/gnu/bison/bison-3.0.2.tar.xz
+    tar xvf bison-3.0.2.tar.xz
+    pushd bison-3.0.2 
+    ./configure --prefix=${ROOT_DIR}/libs/
+    make
+    make install
+    popd
+    popd
+}
+
+function install_mariadb()
+{
+    # build mariadb
+    mkdir -p ${BUILD_DIR}
+    pushd ${BUILD_DIR}
+#    rm -rf mariadb-10.0.14
+#    wget https://downloads.mariadb.org/interstitial/mariadb-10.0.14/source/mariadb-10.0.14.tar.gz
+#    tar xvf mariadb-10.0.14.tar.gz
+    pushd mariadb-10.0.14 
+    cmake -DBUILD_CONFIG=mysql_release -DCMAKE_INSTALL_PREFIX=${ROOT_DIR}/libs/ .
+    make
+    make install
+    popd
+    popd
+}
+
+function install_libaio()
+{
+    rm libaio-0.3.110-1.tar.xz 
+    rm -rf libaio-0.3.110-1
+    wget https://git.fedorahosted.org/cgit/libaio.git/snapshot/libaio-0.3.110-1.tar.xz
+    tar xf libaio-0.3.110-1.tar.xz 
+    pushd libaio-0.3.110-1
+    make prefix=${ROOT_DIR}/libs/ install
+    popd
+}
+
+function check_bison() {
+    local bison_bin=${ROOT_DIR}/libs/bin/bison
+    if [[ ! -e  ${bison_bin} ]]; then
+        echo "bison not installed."Aa
+        install_bison
+    fi
+}
+
+function check_mariadb(){
+#   install_libaio
+   install_mariadb
+}

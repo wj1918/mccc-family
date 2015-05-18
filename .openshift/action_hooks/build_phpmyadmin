@@ -1,0 +1,29 @@
+#!/bin/bash
+function install_phpmyadmin() {
+    local pkg=phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.bz2
+
+    mkdir -p ${BUILD_DIR}
+    pushd ${BUILD_DIR}
+
+    echo "Downloading ${pkg}."
+    wget --output-document=./${pkg} http://downloads.sourceforge.net/project/phpmyadmin/phpMyAdmin/${PHPMYADMIN_VERSION}/${pkg}
+
+    echo "Unpacking ${pkg}."
+    tar xfj ${pkg} 
+    mv phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages phpMyAdmin 
+    rm -rf ${OPENSHIFT_RUNTIME_DIR}www/phpMyAdmin
+    mv phpMyAdmin ${OPENSHIFT_RUNTIME_DIR}www
+
+    echo "Cleaning build directory."
+    rm -rf ${BUILD_DIR}
+    popd
+}
+
+function check_phpmyadmin() {
+    local phpmyadmin_dir=${OPENSHIFT_RUNTIME_DIR}www/phpMyAdmin/
+
+    if [[ ! -d  ${phpmyadmin_dir} ]]; then
+        echo "phpMyAdmin not installed."
+        install_phpmyadmin
+    fi
+}

@@ -1,0 +1,91 @@
+#!/bin/bash
+
+function install_python2() {
+    local python2_dir=${ROOT_DIR}/python2
+    msg_info "Installing python $PYTHON_VERSION..."
+    mkdir -p ${BUILD_DIR}
+    pushd ${BUILD_DIR}
+
+    wget http://python.org/ftp/python/$PYTHON2_VERSION/Python-$PYTHON2_VERSION.tgz
+
+    tar zxf Python-$PYTHON2_VERSION.tgz
+    cd Python-$PYTHON2_VERSION
+    ./configure --prefix=$python2_dir
+    make install -j$NUMBER_OF_PROCESSORS
+
+    check_status $? "Installing python $PYTHON2_VERSION..."
+
+    ln -s $python2_dir/bin/python $python2_dir/bin/python2
+
+    popd
+}
+
+# python is already provided by OpenShift
+# so we don't need to compile and install it
+function check_python2() {
+    local python2_bin=${ROOT_DIR}/python2/bin/python
+
+    if [[ ! -e  ${python2_bin} ]]; then
+        echo "python2 not installed."
+        install_python2
+    else
+        local python_version=`${python2_bin} --version 2>&1|cut -d ' ' -f2`
+
+        if [[ "${PYTHON2_VERSION}" != ${python_version} ]]; then
+            echo "python old, version: ${python_version}."
+            install_python2
+        else
+            echo "python up to date, version: ${python_version}."
+        fi
+    fi
+}
+
+function check_pip2() {
+    local pip2_bin=${ROOT_DIR}/python2/bin/pip
+    
+    msg_info "Checking for pip 2..."
+    if [[ -e  ${pip2_bin} ]]; then
+        msg_success "Checking for pip 2... exists."
+        return
+    fi
+
+    mkdir -p ${BUILD_DIR}
+    pushd ${BUILD_DIR}
+
+    rm -f get-pip.py
+    wget https://bootstrap.pypa.io/get-pip.py
+    ${ROOT_DIR}/python2/bin/python get-pip.py
+    check_status $? 'Installing pip 2 ...'
+
+    popd
+}
+
+function check_venv2() {
+    local python2_bin=${ROOT_DIR}/python2/bin/python
+    local virtualenv_dir="$ROOT_DIR/venv2"
+    
+    msg_info "Checking for virtualenv..."
+    if [ -d $virtualenv_dir ]; then
+        msg_success "Checking for virtualenv... exists."
+        return
+    fi
+
+    msg_info "Creating virtualenv..."
+    ${ROOT_DIR}/python2/bin/pip install virtualenv
+    ${ROOT_DIR}/python2/bin/virtualenv --no-site-packages --python="$python2_bin" $virtualenv_dir
+    check_status $? 'Creating virtualenv...'
+}
+
+function install_requirements2() {
+    msg_info "Procesing requirements..."
+    REQUIREMENTS_FILE="$OPENSHIFT_REPO_DIR/requirements2.txt"
+    if [ ! -f $REQUIREMENTS_FILE ]; then
+        msg_info "Procesing requirements... not found"
+        return
+    fi
+
+    activate_virtualenv
+    ${ROOT_DIR}/python2/bin/pip install --use-mirrors -r $REQUIREMENTS_FILE
+    check_status $? "Procesing requirements..."
+    deactivate
+}

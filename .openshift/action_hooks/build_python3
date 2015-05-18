@@ -1,0 +1,74 @@
+#!/bin/bash
+
+function install_python() {
+    local python_dir=${ROOT_DIR}/python
+    msg_info "Installing python $PYTHON_VERSION..."
+    mkdir -p ${BUILD_DIR}
+    pushd ${BUILD_DIR}
+
+    wget http://python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz
+
+    tar zxf Python-$PYTHON_VERSION.tgz
+    cd Python-$PYTHON_VERSION
+    ./configure --prefix=$python_dir
+    make install -j$NUMBER_OF_PROCESSORS
+
+    check_status $? "Installing python $PYTHON_VERSION..."
+
+    ln -s $python_dir/bin/python3 $python_dir/bin/python
+
+    popd
+}
+
+# python is already provided by OpenShift
+# so we don't need to compile and install it
+function check_python() {
+    local python_bin=${ROOT_DIR}/python/bin/python
+
+    if [[ ! -e  ${python_bin} ]]; then
+        echo "python not installed."
+        install_python
+    else
+        local python_version=`${python_bin} --version 2>&1|cut -d ' ' -f2`
+
+        if [[ "${PYTHON_VERSION}" != ${python_version} ]]; then
+            echo "python old, version: ${python_version}."
+            install_python
+        else
+            echo "python up to date, version: ${python_version}."
+        fi
+    fi
+}
+
+# virtualenv is already provided by OpenShift
+# so we don't need to compile and install it
+function check_venv() {
+    local python_bin=${ROOT_DIR}/python/bin/python
+    local virtualenv_dir="$ROOT_DIR/venv"
+    
+    msg_info "Checking for virtualenv..."
+    if [ -d $virtualenv_dir ]; then
+        msg_success "Checking for virtualenv... exists."
+        return
+    fi
+
+    msg_info "Creating virtualenv..."
+    ${ROOT_DIR}/python/bin/pip3 install virtualenv
+    ${ROOT_DIR}/python/bin/virtualenv --no-site-packages --python="$python_bin" $virtualenv_dir
+    check_status $? 'Creating virtualenv...'
+}
+
+function install_requirements3() {
+    msg_info "Procesing requirements..."
+    if [ ! -f $REQUIREMENTS_FILE ]; then
+        msg_info "Procesing requirements... not found"
+        return
+    fi
+
+    activate_virtualenv
+    ${ROOT_DIR}/python/bin/pip3 install --use-mirrors -r $REQUIREMENTS_FILE
+    check_status $? "Procesing requirements..."
+    deactivate
+}
+
+

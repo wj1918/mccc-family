@@ -1,0 +1,48 @@
+#!/bin/bash
+
+function check_django() {
+    msg_info "Checking for Django ..."
+    local TEMPLATE_DIR=${OPENSHIFT_REPO_DIR}.openshift/tmpl/
+
+    activate_virtualenv
+    if [ -z "$(pip freeze | grep Django)" ]; then
+#    if [[ true ]]; then
+
+        msg_info 'Installling python mysql connector ...'
+        pip install --allow-external mysql-connector-python mysql-connector-python
+        check_status $? 'Installling python mysql connector...'
+
+        msg_info 'Installling Django...'
+        pip install Django
+        check_status $? 'Installling Django...'
+
+        cp secure_db.py $OPENSHIFT_REPO_DIR/wsgi/
+        pushd $OPENSHIFT_REPO_DIR/wsgi/
+
+        echo "Pre-processing Django config."
+        mkdir -p ${BUILD_DIR}
+        cp ${TEMPLATE_DIR}/settings.py.tmpl ${BUILD_DIR}/settings.py 
+        perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' ${BUILD_DIR}/settings.py 
+        cp ${BUILD_DIR}/settings.py ${OPENSHIFT_REPO_DIR}wsgi/${DJANGO_SITE_NAME}/${DJANGO_SITE_NAME}/
+
+        cp ${TEMPLATE_DIR}/urls.py.tmpl ${BUILD_DIR}/urls.py
+        perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' ${BUILD_DIR}/urls.py
+        cp ${BUILD_DIR}/urls.py ${OPENSHIFT_REPO_DIR}wsgi/${DJANGO_SITE_NAME}/${DJANGO_SITE_NAME}/
+
+        pushd ${DJANGO_SITE_NAME}
+        export DJANGO_SETTINGS_MODULE=${DJANGO_SITE_NAME}.settings
+        python manage.py migrate
+        python manage.py createsuperuser --email=wj1918@hotmail.com --username=admin --noinput
+
+        mv ../secure_db.py .
+        python secure_db.py
+        unset DJANGO_SETTINGS_MODULE
+        popd
+        popd
+	
+    else
+        msg_success 'Checking for Django ... already installed.'
+    fi
+#    deactivate    
+}
+

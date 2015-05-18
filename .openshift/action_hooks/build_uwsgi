@@ -1,0 +1,16 @@
+#!/bin/bash
+
+function check_uwsgi() {
+    msg_info "Checking for uWSGI..."
+
+    activate_virtualenv
+    if [ -z "$(pip freeze | grep uWSGI)" ]; then
+        msg_info 'Installling uWSGI...'
+        pip install uWSGI
+        check_status $? 'Installling uWSGI...'
+    else
+        msg_success 'Checking for uWSGI... already installed.'
+    fi
+    deactivate    
+}
+
