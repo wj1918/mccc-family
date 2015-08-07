@@ -14,11 +14,14 @@
             {% else %} 
                 <div class="jumbotron text-center">
                     <div class="well" style="max-width: 600px; margin: 0 auto 10px;">
+                        {% if request.user.is_superuser %}
+                            <p><a class="btn btn-primary btn-lg btn-block" href="admin/" role="button">Administration</a></p>
+                        {% endif %}
                         {% if perms.family %}
-                            <p><a class="btn btn-primary btn-lg btn-block" href="admin/family/person/" role="button">Manage Family Database</a></p>
+                            <p><a class="btn btn-primary btn-lg btn-block" href="admin/family/person/" role="button">Family Database</a></p>
                         {% endif %}
                         {% if perms.children %}
-                            <p><a class="btn btn-primary btn-lg btn-block" href="children/children/cmmaster/" role="button">Search Children Database</a></p>
+                            <p><a class="btn btn-primary btn-lg btn-block" href="children/children/cmmaster/" role="button">Children Database</a></p>
                         {% endif %}
                         {% if perms.member %}
                             <p><a class="btn btn-primary btn-lg btn-block" href="member/member/mcccdir/" role="button">Member Directory</a></p>
