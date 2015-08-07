@@ -65,3 +65,4 @@ class CmMaster(models.Model):
     class Meta:
         managed = False
         db_table = 'MCCC_CM_Master'
+        permissions  = (('readonly', 'Can Read Only Children'),)

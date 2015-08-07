@@ -15,3 +15,5 @@ class McccDir(models.Model):
     class Meta:
         managed = False
         db_table = 'MCCC_Dir'
+        permissions  = (('readonly', 'Can Read Only Member'),)
+

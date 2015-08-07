@@ -21,6 +21,8 @@ class Family(models.Model):
     class Meta:
         managed = False
         db_table = 'MCCC_Family'
+        permissions  = (('readonly', 'Can Read Only Family'),)
+
 
 class Person(models.Model):
     def __unicode__(self):    
@@ -54,3 +56,4 @@ class Person(models.Model):
     class Meta:
         managed = False
         db_table = 'MCCC_Person'
+        permissions  = (('readonly', 'Can Read Only Person'),)

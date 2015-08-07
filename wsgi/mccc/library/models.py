@@ -16,7 +16,7 @@ class McccLibrary(models.Model):
     class Meta:
         managed = False
         db_table = 'MCCC_Library'
-
+        permissions  = (('readonly', 'Can Read Only Library'),)
 
 """
 
