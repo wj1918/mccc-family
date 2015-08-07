@@ -80,5 +80,15 @@
 </div>
 <!-- END Container -->
 
+<script type="text/javascript">
+    // replace admin:index url with home url
+    var x=document.getElementsByClassName("breadcrumbs");
+    if(x.length>0){
+        if(x[0].childElementCount>0 && x[0].children[0].text==='Home'){
+            x[0].children[0].href="/";
+        }
+    }
+    
+</script>
 </body>
 </html>
