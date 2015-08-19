@@ -9,6 +9,7 @@ from django.views.generic.base import RedirectView
 from member.admin import member_site
 from children.admin import children_site
 from library.admin import library_site
+from profile.admin import profile_site
 
 urlpatterns = patterns('',
     # Examples:
@@ -26,6 +27,8 @@ urlpatterns = patterns('',
     url(r'^member/', include(member_site.urls)),
     url(r'^children/', include(children_site.urls)),
     url(r'^library/', include(library_site.urls)),
+    url(r'^profile/', include(profile_site.urls)),
+
 )
 urlpatterns += staticfiles_urlpatterns()
 
