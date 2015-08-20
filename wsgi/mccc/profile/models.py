@@ -10,9 +10,8 @@ class ProfileFamily(models.Model):
         return u','.join(faddress).encode('utf-8').strip()
     id = models.AutoField(db_column='FamilyID',primary_key=True,verbose_name="Family ID")
     status = models.CharField(db_column='Status', max_length=2, blank=True, help_text="A -- Active, I -- Inactive, L -- Local Inactive, O -- Out of Date, N -- New, R -- Remote")  # Field name made lowercase.
-    home1 = models.CharField(db_column='Home1', max_length=40, blank=True)  # Field name made lowercase.
-    home2 = models.CharField(db_column='Home2', max_length=40, blank=True)  # Field name made lowercase.
-    homefax = models.CharField(db_column='HomeFax', max_length=40, blank=True)  # Field name made lowercase.
+    home1 = models.CharField('Home Phone', db_column='Home1', max_length=40, blank=True)  # Field name made lowercase.
+    homefax = models.CharField('Home Fax', db_column='HomeFax', max_length=40, blank=True)  # Field name made lowercase.
     address = models.CharField(db_column='Address', max_length=100, blank=True)  # Field name made lowercase.
     city = models.CharField(db_column='City', max_length=40, blank=True)  # Field name made lowercase.
     state = models.CharField(db_column='State', max_length=4, blank=True)  # Field name made lowercase.
@@ -20,6 +19,9 @@ class ProfileFamily(models.Model):
     class Meta:
         db_table = 'MCCC_Family'
         managed = False
+        verbose_name_plural = 'Families'
+        verbose_name ='Family'
+
 
 class ProfilePerson(models.Model):
     def __unicode__(self):    
@@ -32,16 +34,14 @@ class ProfilePerson(models.Model):
     sex = models.CharField(db_column='Sex', max_length=2, blank=True)  # Field name made lowercase.
     role = models.CharField(db_column='Role', max_length=4, blank=True)  # Field name made lowercase.
     email = models.CharField(db_column='Email', max_length=100, blank=True)  # Field name made lowercase.
-    cphone = models.CharField(db_column='CPhone', max_length=510, blank=True)  # Field name made lowercase.
-    wphone = models.CharField(db_column='WPhone', max_length=40, blank=True)  # Field name made lowercase.
-    wfax = models.CharField(db_column='WFax', max_length=40, blank=True)  # Field name made lowercase.
-    waddress = models.CharField(db_column='Waddress', max_length=100, blank=True)  # Field name made lowercase.
-    category = models.CharField(db_column='Category', max_length=4, blank=True)  # Field name made lowercase.
-    birthday = models.DateField(db_column='Birthday', blank=True, null=True)  # Field name made lowercase.
+    cphone = models.CharField('Cell Phone', db_column='CPhone', max_length=510, blank=True)  # Field name made lowercase.
+    birthday = models.DateField('Brithday', db_column='Birthday', blank=True, null=True)  # Field name made lowercase.
     family = models.ForeignKey(ProfileFamily,db_column='FamilyID',related_name="persons")
     class Meta:
         db_table = 'MCCC_Person'
         managed = False
+        verbose_name_plural = 'Persons'
+        verbose_name = 'Person'
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
