@@ -10,6 +10,7 @@ from member.admin import member_site
 from children.admin import children_site
 from library.admin import library_site
 from profile.admin import profile_site
+from children.urls import urlpatterns as children_urlpatterns
 
 urlpatterns = patterns('',
     # Examples:
@@ -25,11 +26,10 @@ urlpatterns = patterns('',
     url(r"^account/social/", include("social.apps.django_app.urls", namespace="social")),
     url(r"^account/logout/$", LogoutView.as_view(), name="account_logout"),
     url(r'^member/', include(member_site.urls)),
-    url(r'^children/', include(children_site.urls)),
     url(r'^library/', include(library_site.urls)),
     url(r'^profile/', include(profile_site.urls)),
-
 )
+urlpatterns += children_urlpatterns
 urlpatterns += staticfiles_urlpatterns()
 
 admin.site.site_header = 'Administration'

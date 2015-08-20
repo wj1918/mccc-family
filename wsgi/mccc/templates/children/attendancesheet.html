@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>>Grade {{grade}} Attendance Sheet </title>
+
+<style type="text/css" media="screen">
+body{
+    font-size:x-large;
+}
+table{
+    border-collapse:collapse;
+    border:1px solid black;
+    width:100%;
+    height:100%;
+}
+
+table td{
+    border:1px solid black;
+}
+
+.inner { 
+    height: 100%;
+}
+
+</style>
+</head>
+
+{% block content %}
+<h2>Grade {{grade}} Attendance Sheet </h2>
+<div class="inner">
+<table>
+<tr><td>Name</td><td>Allergy</td>
+{% for sunday in sundays %}
+<td>{{sunday}}</td>
+{% endfor %}
+</tr>    
+{% for children in children_list %}
+<tr>
+<td>{{ children.first_last }}</td>
+<td>{{ children.allergies_medical_conditions_medications }}</td>
+{% for sunday in sundays %}
+<td></td>
+{% endfor %}
+
+</tr>
+{% endfor %}
+</table>
+</div>
+
+{% endblock %}
+
+<body>
+
+</body>
+</html>
