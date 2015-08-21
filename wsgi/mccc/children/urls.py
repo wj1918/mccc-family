@@ -4,7 +4,7 @@ from children.admin import children_site
 from . import views
 
 urlpatterns = [
-    url(r'^attendancesheet/([0-9]{1})/([0-9]+)/([0-9]+)/$', views.attendancesheet),
+    url(r'^attendancesheet/([A-Za-z0-9]{1,2})/([0-9]+)/([0-9]+)/$', views.attendancesheet),
     url(r'^children/', include(children_site.urls)),
     
 ]
