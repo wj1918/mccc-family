@@ -11,7 +11,8 @@ def attendancesheet(request,grade,month,num_weeks):
     for i in range(int(num_weeks)):
         sundays.append("{:%m/%d}".format(sunday))
         sunday=sunday+ datetime.timedelta(weeks=1)
-        
-    children_list = CmMaster.objects.filter(ssgrade=grade,ssactive='Active')
+    
+    grades=grade.split("+")    
+    children_list = CmMaster.objects.filter(ssgrade__in=grades,ssactive='Active').order_by('ssgrade')
     context ={'children_list': children_list, "grade":grade, "sundays":sundays } 
     return render(request, 'children/attendancesheet.html', context)

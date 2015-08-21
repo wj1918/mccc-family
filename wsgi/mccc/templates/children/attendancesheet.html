@@ -8,6 +8,7 @@
 <style type="text/css">
 body{
     font-size:large;
+    line-height: 150%;
 }
 table{
     border-collapse:collapse;
@@ -16,7 +17,7 @@ table{
     height:100%;
 }
 
-table td{
+table td,th{
     border:1px solid black;
 }
 
@@ -24,22 +25,37 @@ table td{
     height: 100%;
 }
 
+.allergy {
+    font-size: smaller;
+}
+
 </style>
 </head>
 
 {% block content %}
+
+{% if grade in "N" %}
+<h2>Nursery- Fall </h2>
+{% else %}
 <h2>Grade {{grade}} - Fall </h2>
+{% endif %}
+
 <div class="inner">
 <table>
-<tr><td>Name</td><td>Allergy</td>
+<tr>
+<th style="width:150px;">Name</th>
+<th style="width:50px;" >Grade</th>
+<th style="width:150px;">Allergy</th>
+
 {% for sunday in sundays %}
-<td>{{sunday}}</td>
+<th>{{sunday}}</th>
 {% endfor %}
 </tr>    
 {% for children in children_list %}
 <tr>
 <td>{{ children.first_last }}</td>
-<td>{{ children.allergies_medical_conditions_medications }}</td>
+<td>{{ children.ssgrade }}</td>
+<td> <span class="allergy">{{ children.allergies_medical_conditions_medications }} </span> </td>
 {% for sunday in sundays %}
 <td></td>
 {% endfor %}
