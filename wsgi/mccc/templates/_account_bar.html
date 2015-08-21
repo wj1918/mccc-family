@@ -5,7 +5,7 @@
 <ul class="nav navbar-nav pull-right">
     {% if request.user.is_authenticated %}
         <p class="navbar-text">
-            <i class="fa fa-user"></i> {% user_display request.user %}
+            <a href="{% url 'profile:change_family' %}" title="Change Family Information"><i class="fa fa-user"></i> {% user_display request.user %}</a>
         </p>
         <li>
             <a id="account_logout" href="{% url 'account_logout' %}"><i class="fa fa-power-off"></i> {% trans "Log out" %}</a>

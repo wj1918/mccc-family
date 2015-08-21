@@ -1,10 +1,16 @@
 # admin.py
+from django.utils.encoding import force_text, python_2_unicode_compatible
+from django.utils.translation import string_concat, ugettext as _, ungettext
+from django.http import Http404, HttpResponseRedirect
+from django.contrib import messages
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from models import UserProfile
 from django.contrib.admin import AdminSite
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 
 from functools import update_wrapper
 from django.utils import six
@@ -77,14 +83,12 @@ class ProfileFamilyAdmin(admin.ModelAdmin):
         
         def wrap(view, cacheable=False):
             def wrapper(*args, **kwargs):
-                return self.admin_site.admin_view(view, cacheable)(*args, **kwargs)
+                return login_required(view)(*args, **kwargs)
             return update_wrapper(wrapper, view)
 
-        info = self.model._meta.app_label, self.model._meta.model_name
-        
         my_urls=[
             url(r'^jsi18n/$', wrap(self.i18n_javascript, cacheable=True), name='jsi18n'),
-            url(r'^update/$', wrap(self.change_view), name='%s_%s_update' % info),
+            url(r'^update/$', wrap(self.change_view), name='change_family'),
         ]
         return my_urls
 
@@ -112,6 +116,24 @@ class ProfileFamilyAdmin(admin.ModelAdmin):
         else:
             from django.views.i18n import null_javascript_catalog as javascript_catalog
         return javascript_catalog(request, packages=['profile'])
+
+    def response_change(self, request, obj):
+        """
+        Determines the HttpResponse for the change_view stage.
+        """
+        opts = self.model._meta
+
+        msg_dict = {'name': force_text(opts.verbose_name), 'obj': force_text(obj)}
+        if "_continue" in request.POST:
+            msg = _('The %(name)s "%(obj)s" was changed successfully. You may edit it again below.') % msg_dict
+            self.message_user(request, msg, messages.SUCCESS)
+            redirect_url = request.path
+            return HttpResponseRedirect(redirect_url)
+        else:
+            msg = _('The %(name)s "%(obj)s" was changed successfully.') % msg_dict
+            self.message_user(request, msg, messages.SUCCESS)
+            post_url = reverse('home')
+            return HttpResponseRedirect(post_url)
 
 class ProfileSite(AdminSite):
     site_header = 'User Profile'
