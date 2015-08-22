@@ -29,28 +29,12 @@ class CustomUserAdmin(UserAdmin):
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
 
-class UserProfileAdmin(admin.ModelAdmin):
-    exclude =['user',]
+class ProfileFamilyAdminLookup(admin.ModelAdmin):
+    list_display = ('id','address','city','state','zip', 'home1', 'homefax')
+    list_filter = ['status','city','state']
+    search_fields = ['address','city','home1']
 
-    def get_queryset(self, request):
-        qs = super(UserProfileAdmin, self).get_queryset(request)
-        return qs.filter(user=request.user)
-        
-    def has_add_permission(self, request):
-        return False
-
-    def has_change_permission(self, request, obj=None):
-        #import pdb; pdb.set_trace()
-        #return not obj and obj.user==request.user
-        return obj is None or obj.user==request.user ;
-
-    def has_delete_permission(self, request, obj=None):
-        return False;
-
-    def has_module_permission(self, request):
-        return True
-
-#admin.site.register(UserProfile,UserProfileAdmin)
+admin.site.register(ProfileFamily, ProfileFamilyAdminLookup)
 
 class ProfilePersonInline(admin.StackedInline):
     model = ProfilePerson
@@ -67,6 +51,7 @@ class ProfilePersonInline(admin.StackedInline):
 
     def has_module_permission(self, request):
         return request.user.is_active and request.user.is_staff
+
 
 class ProfileFamilyAdmin(admin.ModelAdmin):
     inlines = [ProfilePersonInline]
@@ -142,6 +127,6 @@ class ProfileSite(AdminSite):
         model_admin= self._registry[ProfileFamily]
         return model_admin.get_urls()
 
-profile_site = ProfileSite(name="profile")
-profile_site.register(ProfileFamily,ProfileFamilyAdmin)
 
+profile_site = ProfileSite(name="profile")
+profile_site.register(ProfileFamily, ProfileFamilyAdmin)
