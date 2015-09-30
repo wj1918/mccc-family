@@ -13,21 +13,21 @@ umask 077
 source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/common
 
 # Configure versions
-NGINX_VERSION='1.6.2'
+NGINX_VERSION='1.8.0'
 ZLIB_VERSION='1.2.8'
 PCRE_VERSION='8.37'
 
-PHP_VERSION='5.6.2'
+PHP_VERSION='5.6.13'
 ICU_VERSION='53.1'
 
 LIBMCRYPT_VERSION='2.5.8'
-LIBTOOL_VERSION='2.4.2'
+LIBTOOL_VERSION='2.4.6'
 
 NODE_VERSION='0.6.20' #'0.10.26'
 
 PYTHON3_VERSION="3.4.2"
 PYTHON2_VERSION="2.7.8"
-PHPMYADMIN_VERSION="4.2.8"
+PHPMYADMIN_VERSION="4.5.0.2"
 
 declare -A PHP_PECL
 declare -A PHP_PECL_CONFIGURE
@@ -44,9 +44,9 @@ fi
 # Load functions
 source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_nginx
 source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_php_libs
-source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_mdbtools
+#source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_mdbtools
 source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_php
-source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_node
+#source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_node
 source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_python${OPENSHIFT_PYTHON_VERSION}
 source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_uwsgi
 source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_django
@@ -56,10 +56,10 @@ source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_phpmyadmin
 check_nginx
 
 # Check glib2
-check_glib2
+#check_glib2
 
 # Check mdbtools
-check_mdbtools
+#check_mdbtools
 
 if [ "$BUILD_PHP_FROM_SOURCE" == "Yes" ]; then
 

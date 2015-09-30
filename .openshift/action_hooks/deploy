@@ -29,9 +29,9 @@ cp ${TEMPLATE_DIR}/config.inc.php.tmpl ${BUILD_DIR}/config.inc.php
 perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' ${BUILD_DIR}/config.inc.php
 cp ${BUILD_DIR}/config.inc.php ${PHPMYADMIN_DIR}/config.inc.php
 
-cp ${TEMPLATE_DIR}/AuthenticationCookie.class.php.tmpl ${BUILD_DIR}/AuthenticationCookie.class.php
-perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' ${BUILD_DIR}/AuthenticationCookie.class.php
-cp ${BUILD_DIR}/AuthenticationCookie.class.php ${PHPMYADMIN_DIR}/libraries/plugins/auth/AuthenticationCookie.class.php
+cp ${TEMPLATE_DIR}/signon.php.tmpl ${BUILD_DIR}/signon.php
+perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' ${BUILD_DIR}/signon.php
+cp ${BUILD_DIR}/signon.php ${PHPMYADMIN_DIR}/signon.php
 
 echo "Pre-processing Django config."
 mkdir -p ${BUILD_DIR}

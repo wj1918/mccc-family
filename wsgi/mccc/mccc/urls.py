@@ -11,6 +11,7 @@ from children.admin import children_site
 from library.admin import library_site
 from profile.admin import profile_site
 from children.urls import urlpatterns as children_urlpatterns
+from views import database;
 
 urlpatterns = patterns('',
     # Examples:
@@ -28,6 +29,7 @@ urlpatterns = patterns('',
     url(r'^member/', include(member_site.urls)),
     url(r'^library/', include(library_site.urls)),
     url(r'^profile/', include(profile_site.urls)),
+    url(r'^database/', database),
 )
 urlpatterns += children_urlpatterns
 urlpatterns += staticfiles_urlpatterns()

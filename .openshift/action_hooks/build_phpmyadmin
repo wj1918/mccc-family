@@ -6,7 +6,7 @@ function install_phpmyadmin() {
     pushd ${BUILD_DIR}
 
     echo "Downloading ${pkg}."
-    wget --output-document=./${pkg} http://downloads.sourceforge.net/project/phpmyadmin/phpMyAdmin/${PHPMYADMIN_VERSION}/${pkg}
+    wget --output-document=./${pkg} https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/${pkg}
 
     echo "Unpacking ${pkg}."
     tar xfj ${pkg} 
@@ -21,6 +21,7 @@ function install_phpmyadmin() {
 
 function check_phpmyadmin() {
     local phpmyadmin_dir=${OPENSHIFT_RUNTIME_DIR}www/phpMyAdmin/
+    msg_info "Checking for phpMyAdmin..."
 
     if [[ ! -d  ${phpmyadmin_dir} ]]; then
         echo "phpMyAdmin not installed."
