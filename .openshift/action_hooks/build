@@ -52,6 +52,9 @@ source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_uwsgi
 source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_django
 source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_phpmyadmin
 
+rm -rf ${BUILD_DIR}
+mkdir -p ${BUILD_DIR}
+
 # Check nginx
 check_nginx
 
