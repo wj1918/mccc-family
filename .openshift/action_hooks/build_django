@@ -15,7 +15,9 @@ function check_django() {
         msg_info 'Installling Django...'
         pip install Django
         check_status $? 'Installling Django...'
-
+        
+        pip install -r $OPENSHIFT_REPO_DIR/requirements2.txt
+        
         cp secure_db.py $OPENSHIFT_REPO_DIR/wsgi/
         pushd $OPENSHIFT_REPO_DIR/wsgi/
 
@@ -24,10 +26,6 @@ function check_django() {
         cp ${TEMPLATE_DIR}/settings.py.tmpl ${BUILD_DIR}/settings.py 
         perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' ${BUILD_DIR}/settings.py 
         cp ${BUILD_DIR}/settings.py ${OPENSHIFT_REPO_DIR}wsgi/${DJANGO_SITE_NAME}/${DJANGO_SITE_NAME}/
-
-        cp ${TEMPLATE_DIR}/urls.py.tmpl ${BUILD_DIR}/urls.py
-        perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' ${BUILD_DIR}/urls.py
-        cp ${BUILD_DIR}/urls.py ${OPENSHIFT_REPO_DIR}wsgi/${DJANGO_SITE_NAME}/${DJANGO_SITE_NAME}/
 
         pushd ${DJANGO_SITE_NAME}
         export DJANGO_SETTINGS_MODULE=${DJANGO_SITE_NAME}.settings
