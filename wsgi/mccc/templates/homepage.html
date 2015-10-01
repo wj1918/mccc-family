@@ -15,6 +15,7 @@
                 <div class="jumbotron text-center">
                     <div class="well" style="max-width: 600px; margin: 0 auto 10px;">
                         {% if request.user.is_superuser %}
+                            <p><a class="btn btn-primary btn-lg btn-block" href="database/" role="button">Database</a></p>
                             <p><a class="btn btn-primary btn-lg btn-block" href="admin/" role="button">Administration</a></p>
                         {% endif %}
                         {% if perms.family %}

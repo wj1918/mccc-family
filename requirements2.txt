@@ -1,4 +1,4 @@
-# python-social-auth
+Django==1.8.4
 MySQL-python
 pinax-theme-bootstrap==5.4.0
 django-user-accounts==1.0c9
@@ -8,3 +8,4 @@ django-jsonfield==0.9.12
 python-social-auth==0.2.12
 singledispatch
 unicodecsv
+pycrypto==2.6.1

@@ -1,7 +1,34 @@
 <?php
-$cfg['blowfish_secret'] = 'ba17c1ec07d65003';  // use here a value of your choice
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 
-$i=0;
+/**
+ * This is needed for cookie based authentication to encrypt password in
+ * cookie
+ */
+$cfg['blowfish_secret'] = '${OPENSHIFT_SECRET_KEY}'; /* YOU MUST FILL IN THIS FOR COOKIE AUTH! */
+
+/**
+ * Servers configuration
+ */
+$i = 0;
+
+/**
+ * First server
+ */
 $i++;
-$cfg['Servers'][$i]['auth_type']     = 'cookie';
-?>
+/* Authentication type */
+$cfg['Servers'][$i]['auth_type'] = 'signon';
+/* Server parameters */
+$cfg['Servers'][$i]['host'] = '${OPENSHIFT_MYSQL_DB_HOST}';
+$cfg['Servers'][$i]['port'] = '${OPENSHIFT_MYSQL_DB_PORT}';
+$cfg['Servers'][$i]['AllowNoPassword'] = true;
+$cfg['Servers'][$i]['SignonURL'] = 'signon.php';
+$cfg['Servers'][$i]['SignonSession'] = 'SignonSession';
+$cfg['Servers'][$i]['SignonURL'] = '/';
+
+/**
+ * Directories for saving/loading files from server
+ */
+$cfg['UploadDir'] = '';
+$cfg['SaveDir'] = '';
+

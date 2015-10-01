@@ -1,0 +1,65 @@
+<?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
+/**
+ * Single signon for phpMyAdmin
+ */
+
+
+function base64url_encode($data) { 
+  return rtrim(strtr(base64_encode($data), '+/', '-_'), '='); 
+} 
+
+function base64url_decode($data) { 
+  return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT)); 
+}
+  
+function decrypt_data($data, $key) {
+    $data=base64url_decode($data);
+    
+    $cypher = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
+    
+    $ivlen = 16;
+    # $ivlen = mcrypt_get_iv_size ( $cipher , MCRYPT_MODE_CBC );
+    $iv = substr($data, 0, $ivlen);
+    $data = substr($data, $ivlen);
+
+    // initialize encryption handle
+    if (mcrypt_generic_init($cypher, $key, $iv) != -1) {
+            // decrypt
+            $decrypted = mdecrypt_generic($cypher, $data);
+            // clean up
+            mcrypt_generic_deinit($cypher);
+            mcrypt_module_close($cypher);
+            return $decrypted;
+    }
+
+    return false;
+}
+
+$enc = $_GET["c"];
+$SECRET_KEY = '${OPENSHIFT_SECRET_KEY}';
+$secret = substr($SECRET_KEY, 0, 16);
+
+$decr = decrypt_data($enc, $secret);
+
+$res=rtrim($decr,substr($res,-1));
+list($username, $password) = explode(':', $res);
+$password=trim($password);
+
+/* Create signon session */
+$session_name = 'SignonSession';
+session_name($session_name);
+session_start();
+
+/* Store there credentials */
+$_SESSION['PMA_single_signon_user'] = $username;
+$_SESSION['PMA_single_signon_password'] = $password;
+/* Update another field of server configuration */
+// $_SESSION['PMA_single_signon_cfgupdate'] = array('verbose' => 'Signon test');
+$id = session_id();
+/* Close that session */
+session_write_close();
+/* Redirect to phpMyAdmin (should use absolute URL here!) */
+header('Location: index.php');
+
+?>

@@ -85,7 +85,7 @@ function install_requirements2() {
     fi
 
     activate_virtualenv
-    ${ROOT_DIR}/python2/bin/pip install --use-mirrors -r $REQUIREMENTS_FILE
+    ${ROOT_DIR}/python2/bin/pip install -r $REQUIREMENTS_FILE
     check_status $? "Procesing requirements..."
     deactivate
 }
