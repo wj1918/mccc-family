@@ -86,6 +86,9 @@ else
     fi
 fi
 
+# check phpmyadmin
+check_phpmyadmin
+
 # Check NodeJS
 # check_node
 
@@ -98,15 +101,7 @@ check_pip${OPENSHIFT_PYTHON_VERSION}
 # check virtual env
 check_venv${OPENSHIFT_PYTHON_VERSION}
 
+install_requirements2
+
 # check uwsgi
 check_uwsgi
-
-# check phpmyadmin
-check_phpmyadmin
-
-# install requirement
-install_requirements${OPENSHIFT_PYTHON_VERSION}
-
-# check django
-check_django
-
