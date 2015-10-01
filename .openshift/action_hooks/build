@@ -74,14 +74,17 @@ else
     echo "Use installed php"
     
 	if which php; then 
+		mkdir -p ${ROOT_DIR}/php5/bin/
         ln -fs `which php` ${ROOT_DIR}/php5/bin/php
     fi
     
 	if which php5-fpm; then 
+   	  mkdir -p ${ROOT_DIR}/php5/sbin/
 	  ln -fs `which php5-fpm` ${ROOT_DIR}/php5/sbin/php-fpm 
     fi
 
 	if which php-fpm; then 
+   	  mkdir -p ${ROOT_DIR}/php5/sbin/
 	  ln -fs `which php5-fpm`  ${ROOT_DIR}/php5/sbin/php-fpm 
     fi
 fi

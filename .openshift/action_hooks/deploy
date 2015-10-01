@@ -22,6 +22,7 @@ cp ${BUILD_DIR}/nginx.conf ${NGINX_DIR}/conf/nginx.conf
 echo "Pre-processing PHP-fpm config."
 cp ${TEMPLATE_DIR}/php-fpm.conf.tmpl ${BUILD_DIR}/php-fpm.conf
 perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' ${BUILD_DIR}/php-fpm.conf
+mkdir -p ${PHP_DIR}/etc/
 cp ${BUILD_DIR}/php-fpm.conf ${PHP_DIR}/etc/php-fpm.conf
 
 echo "Pre-processing phpmyadmin config."
