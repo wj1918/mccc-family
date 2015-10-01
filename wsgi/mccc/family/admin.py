@@ -44,7 +44,7 @@ class FamilyAdmin(admin.ModelAdmin):
 @add_link_field('family','family',field_name='link2')
 class PersonAdmin(admin.ModelAdmin):
     list_display = ('id','last','first','middle','chinese','sex','role','link2','get_family_phone','email','cphone','wphone','worship','fellowship','fellowship2','baptized','bapday','category','birthday','member','memday','get_family_id','get_family_status')
-    list_filter = ['fellowship','fellowship2','worship','baptized','member', 'family__status', 'family__city',]
+    list_filter = ['fellowship','fellowship2','worship','baptized','member', 'family__status', 'category',]
     search_fields = ['last','first','chinese','email','comment', "family__address", "family__city", "family__state", "family__zip","family__home1","family__home2","family__homefax",]
     raw_id_fields = ("family",)
     
