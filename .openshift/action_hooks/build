@@ -52,6 +52,9 @@ source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_uwsgi
 source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_django
 source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_phpmyadmin
 
+rm -rf ${BUILD_DIR}
+mkdir -p ${BUILD_DIR}
+
 # Check nginx
 check_nginx
 
@@ -74,14 +77,17 @@ else
     echo "Use installed php"
     
 	if which php; then 
+		mkdir -p ${ROOT_DIR}/php5/bin/
         ln -fs `which php` ${ROOT_DIR}/php5/bin/php
     fi
     
 	if which php5-fpm; then 
+   	  mkdir -p ${ROOT_DIR}/php5/sbin/
 	  ln -fs `which php5-fpm` ${ROOT_DIR}/php5/sbin/php-fpm 
     fi
 
 	if which php-fpm; then 
+   	  mkdir -p ${ROOT_DIR}/php5/sbin/
 	  ln -fs `which php5-fpm`  ${ROOT_DIR}/php5/sbin/php-fpm 
     fi
 fi

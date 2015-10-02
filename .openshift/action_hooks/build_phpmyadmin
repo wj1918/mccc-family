@@ -12,7 +12,8 @@ function install_phpmyadmin() {
     tar xfj ${pkg} 
     mv phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages phpMyAdmin 
     rm -rf ${OPENSHIFT_RUNTIME_DIR}www/phpMyAdmin
-    mv phpMyAdmin ${OPENSHIFT_RUNTIME_DIR}www
+    mkdir -p ${OPENSHIFT_RUNTIME_DIR}www/
+    mv phpMyAdmin ${OPENSHIFT_RUNTIME_DIR}www/
 
     echo "Cleaning build directory."
     rm -rf ${BUILD_DIR}

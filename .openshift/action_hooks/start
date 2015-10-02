@@ -9,6 +9,8 @@ source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/common
 source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build
 source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/deploy
 
+mkdir -p ${OPENSHIFT_RUN_DIR}
+
 echo "Starting nginx."
 ${OPENSHIFT_RUNTIME_DIR}/nginx/sbin/nginx
 
