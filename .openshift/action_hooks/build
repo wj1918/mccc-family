@@ -1,5 +1,7 @@
 #!/bin/bash
-
+#
+# build all packages or build a package by specify the name, use the check_* only 
+#
 # Exit on first error.
 set -e
 
@@ -17,8 +19,8 @@ NGINX_VERSION='1.8.0'
 ZLIB_VERSION='1.2.8'
 PCRE_VERSION='8.37'
 
-PHP_VERSION='5.6.13'
-ICU_VERSION='53.1'
+PHP_VERSION='5.6.14'
+ICU_VERSION='55.1'
 
 LIBMCRYPT_VERSION='2.5.8'
 LIBTOOL_VERSION='2.4.6'
@@ -31,8 +33,6 @@ PHPMYADMIN_VERSION="4.5.0.2"
 
 declare -A PHP_PECL
 declare -A PHP_PECL_CONFIGURE
-PHP_PECL=( ["mongo"]='1.5.1' )
-PHP_PECL_CONFIGURE=( )
 
 # Try to guess the number of processors from /proc/cpuinfo.
 if [ -f /proc/cpuinfo ]; then
@@ -52,62 +52,65 @@ source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_uwsgi
 source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_django
 source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/build_phpmyadmin
 
-rm -rf ${BUILD_DIR}
-mkdir -p ${BUILD_DIR}
+build_name=$1
+echo $build_name
 
-# Check nginx
-check_nginx
+if [ -z "$build_name" ]; then
+	
+	# Check nginx
+	check_nginx
+	
+	# Check glib2
+	#check_glib2
+	
+	# Check mdbtools
+	#check_mdbtools
+	
+	if [ "$BUILD_PHP_FROM_SOURCE" == "Yes" ]; then
+	
+	    check_libtool
+	    check_icu
+		check_libmcrypt
+		# Check PHP
+		check_php
+	
+	else
+	    echo "Use installed php"
+	    
+		if which php; then 
+			mkdir -p ${ROOT_DIR}/php5/bin/
+	        ln -fs `which php` ${ROOT_DIR}/php5/bin/php
+	    fi
+	    
+		if which php5-fpm; then 
+	   	  mkdir -p ${ROOT_DIR}/php5/sbin/
+		  ln -fs `which php5-fpm` ${ROOT_DIR}/php5/sbin/php-fpm 
+	    fi
+	
+		if which php-fpm; then 
+	   	  mkdir -p ${ROOT_DIR}/php5/sbin/
+		  ln -fs `which php5-fpm`  ${ROOT_DIR}/php5/sbin/php-fpm 
+	    fi
+	fi
+	
+	# check phpmyadmin
+	check_phpmyadmin
 
-# Check glib2
-#check_glib2
-
-# Check mdbtools
-#check_mdbtools
-
-if [ "$BUILD_PHP_FROM_SOURCE" == "Yes" ]; then
-
-	# Check PHP
-	check_php
-
-	# Check pecl extensions
-	for ext in "${!PHP_PECL[@]}"; do
-	    check_pecl ${ext} ${PHP_PECL["$ext"]} ${PHP_PECL_CONFIGURE["$ext"]};
-	done
+	# check python
+	check_python${OPENSHIFT_PYTHON_VERSION}
+	
+	# check pip2 env
+	check_pip${OPENSHIFT_PYTHON_VERSION}
+	
+	# check virtual env
+	check_venv${OPENSHIFT_PYTHON_VERSION}
+	
+	install_requirements2
+	
+	# check uwsgi
+	check_uwsgi
 else
-    echo "Use installed php"
-    
-	if which php; then 
-		mkdir -p ${ROOT_DIR}/php5/bin/
-        ln -fs `which php` ${ROOT_DIR}/php5/bin/php
-    fi
-    
-	if which php5-fpm; then 
-   	  mkdir -p ${ROOT_DIR}/php5/sbin/
-	  ln -fs `which php5-fpm` ${ROOT_DIR}/php5/sbin/php-fpm 
-    fi
-
-	if which php-fpm; then 
-   	  mkdir -p ${ROOT_DIR}/php5/sbin/
-	  ln -fs `which php5-fpm`  ${ROOT_DIR}/php5/sbin/php-fpm 
-    fi
+	
+	$build_name
+	
 fi
-
-# check phpmyadmin
-check_phpmyadmin
-
-# Check NodeJS
-# check_node
-
-# check python
-check_python${OPENSHIFT_PYTHON_VERSION}
-
-# check pip2 env
-check_pip${OPENSHIFT_PYTHON_VERSION}
-
-# check virtual env
-check_venv${OPENSHIFT_PYTHON_VERSION}
-
-install_requirements2
-
-# check uwsgi
-check_uwsgi

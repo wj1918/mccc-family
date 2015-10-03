@@ -4,6 +4,7 @@ function install_nginx() {
     local pkg_pcre=pcre-${PCRE_VERSION}.tar.bz2
     local pkg_zlib=zlib-${ZLIB_VERSION}.tar.gz
 
+    rm -rf ${BUILD_DIR}
     mkdir -p ${BUILD_DIR}
     mkdir -p ${ROOT_DIR}/etc/nginx
     pushd ${BUILD_DIR}
@@ -46,7 +47,6 @@ function install_nginx() {
     echo "Cleaning build directory."
     popd
     popd
-    rm -rf ${BUILD_DIR}
 }
 
 function check_nginx() {
