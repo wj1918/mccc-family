@@ -42,7 +42,7 @@ $secret = substr($SECRET_KEY, 0, 16);
 
 $decr = decrypt_data($enc, $secret);
 
-$res=rtrim($decr,substr($res,-1));
+$res=rtrim($decr,substr($decr,-1));
 list($username, $password) = explode(':', $res);
 $password=trim($password);
 
