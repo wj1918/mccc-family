@@ -10,7 +10,7 @@ class LibrarySite(AdminSite):
 class McccLibraryAdmin(admin.ModelAdmin):
 
     list_display = ('title', 'author', 'itemtype','classnumber','volume','clutternumber', 'inputdate')
-    list_filter = ['itemtype','application']
+    list_filter = ['itemtype','application','classnumber',]
    
     readonly_fields = ('itemtype','classnumber','volume','author','title','autocounter','clutternumber', 'keeper','keeperindex', 'inputdate', 'application')
     search_fields = ('classnumber', 'author','title')
