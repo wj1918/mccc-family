@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+
+source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/common
+activate_virtualenv
+pushd ../../wsgi/mccc
+rm -rf ${OPENSHIFT_STATIC_ROOT}
+python manage.py collectstatic --noinput
+popd
