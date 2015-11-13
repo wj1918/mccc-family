@@ -37,6 +37,7 @@ class ProfileFamilyAdminLookup(admin.ModelAdmin):
 admin.site.register(ProfileFamily, ProfileFamilyAdminLookup)
 
 class ProfilePersonInline(admin.StackedInline):
+    exclude =['role',]
     model = ProfilePerson
     extra = 0
     
