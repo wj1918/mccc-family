@@ -35,9 +35,9 @@ table td,th{
 {% block content %}
 
 {% if grade in "N" %}
-<h2>Nursery- Fall </h2>
+<h2>Nursery- {{quarter}} </h2>
 {% else %}
-<h2>Grade {{grade}} - Fall </h2>
+<h2>Grade {{grade}} - {{quarter}} </h2>
 {% endif %}
 
 <div class="inner">

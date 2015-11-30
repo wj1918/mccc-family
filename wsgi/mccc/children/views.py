@@ -14,7 +14,9 @@ def attendancesheet(request,grade,month,num_weeks):
         sundays.append("{:%m/%d}".format(sunday))
         sunday=sunday+ datetime.timedelta(weeks=1)
     
-    grades=grade.split("+")    
+    grades=grade.split("+")
+    all_season=['Winter','Winter','Spring','Spring','Spring','Summer','Summer','Summer','Fall','Fall','Fall','Winter']
+    quarter=all_season[int(month)-1]
     children_list = CmMaster.objects.filter(ssgrade__in=grades,ssactive='Active').order_by('ssgrade')
-    context ={'children_list': children_list, "grade":grade, "sundays":sundays } 
+    context ={'children_list': children_list, "grade":grade, "sundays":sundays, "quarter":quarter, } 
     return render(request, 'children/attendancesheet.html', context)
