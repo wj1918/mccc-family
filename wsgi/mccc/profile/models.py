@@ -51,11 +51,3 @@ class UserProfile(models.Model):
     class Meta:
         db_table = 'user_profile'
 
-def create_user_profile(sender, instance, created, **kwargs):
-    """Create the UserProfile when a new User is saved"""
-    if created:
-        up = UserProfile()
-        up.user = instance
-        up.save()
-
-post_save.connect(create_user_profile, sender=User)
