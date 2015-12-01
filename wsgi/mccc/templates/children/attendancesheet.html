@@ -44,8 +44,10 @@ table td,th{
 <table>
 <tr>
 <th style="width:150px;">Name</th>
+{% if "+" in grade %}
 <th style="width:50px;" >Grade</th>
-<th style="width:150px;">Allergy</th>
+{% endif %}
+<th style="width:100px;">Allergy</th>
 
 {% for sunday in sundays %}
 <th>{{sunday}}</th>
@@ -54,7 +56,9 @@ table td,th{
 {% for children in children_list %}
 <tr>
 <td>{{ children.first_last }}</td>
+{% if "+" in grade %}
 <td>{{ children.ssgrade }}</td>
+{% endif %}
 <td> <span class="allergy">{{ children.allergies_medical_conditions_medications }} </span> </td>
 {% for sunday in sundays %}
 <td></td>

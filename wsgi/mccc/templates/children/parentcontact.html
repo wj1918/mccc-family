@@ -44,10 +44,12 @@ table td,th{
 <div class="inner">
 <table>
 <tr>
-<th style="width:100px;">Name</th>
+<th style="width:100px;">Children Name</th>
+{% if "+" in grade %}
 <th style="width:50px;" >Grade</th>
-<th style="width:50px;" >Father</th>
-<th style="width:50px;" >Mother</th>
+{% endif %}
+<th style="width:50px;" >Father Name</th>
+<th style="width:50px;" >Mother Name</th>
 <th style="width:50px;" >Home Phone</th>
 <th style="width:50px;" >Email</th>
 </tr>    
@@ -55,7 +57,9 @@ table td,th{
 {% for children in children_list %}
 <tr>
 <td>{{ children.first_last }}</td>
+{% if "+" in grade %}
 <td>{{ children.ssgrade }}</td>
+{% endif %}
 <td>{{ children.fathers_english_name }} </td>
 <td>{{ children.mothers_english_name }} </td>
 <td>{{ children.home }}</td>
