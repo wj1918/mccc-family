@@ -31,6 +31,6 @@ def parentemail(request,grade):
 @login_required
 def parentcontact(request,grade):
     grades=grade.split("+")
-    children_list = CmMaster.objects.filter(ssgrade__in=grades,ssactive='Active').exclude(email__isnull=True).exclude(email__exact='').order_by('ssgrade')
+    children_list = CmMaster.objects.filter(ssgrade__in=grades,ssactive='Active').order_by('ssgrade')
     context ={'children_list': children_list, "grade":grade, } 
     return render(request, 'children/parentcontact.html', context)
