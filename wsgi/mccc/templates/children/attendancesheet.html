@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,12 +13,14 @@ table{
     border-collapse:collapse;
     border:1px solid black;
     width:100%;
-    height:100%;
+    height:90%;
 }
 
 table td,th{
     border:1px solid black;
 }
+
+html, body, .outer { height: 100%; }
 
 .inner { 
     height: 100%;
@@ -29,22 +30,37 @@ table td,th{
     font-size: smaller;
 }
 
+.title {
+  font-weight: 500;
+  font-size: 30px;	    
+}
+
+@media print  {
+    .printButton { visibility: hidden; }
+    .downloadExcel { visibility: hidden; }
+}
+
 </style>
 </head>
 
 {% block content %}
-
-{% if grade in "N" %}
-<h2>Nursery- {{quarter}} </h2>
-{% else %}
-<h2>Grade {{grade}} - {{quarter}} </h2>
-{% endif %}
-
 <div class="inner">
+    
+<span class="title">
+{% if grade in "N" %}
+Nursery- {{quarter}} 
+{% else %}
+Grade {{grade}} - {{quarter}} 
+{% endif %}
+</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<button class="printButton" onclick="javascript:window.print();" >Print</button>    
+<button class="downloadExcel" title="Download as Excel File"  onclick="javascript: window.open(window.location.href+'?excel=True');">Download</button>
+
 <table>
 <tr>
 <th style="width:150px;">Name</th>
-{% if "+" in grade %}
+{% if show_grade %}
 <th style="width:50px;" >Grade</th>
 {% endif %}
 <th style="width:100px;">Allergy</th>
@@ -56,7 +72,7 @@ table td,th{
 {% for children in children_list %}
 <tr>
 <td>{{ children.first_last }}</td>
-{% if "+" in grade %}
+{% if show_grade %}
 <td>{{ children.ssgrade }}</td>
 {% endif %}
 <td> <span class="allergy">{{ children.allergies_medical_conditions_medications }} </span> </td>
@@ -66,6 +82,21 @@ table td,th{
 
 </tr>
 {% endfor %}
+
+{% for f in filler %}
+<tr>
+<td>&nbsp;</td>
+{% if show_grade %}
+<td>&nbsp;</td>
+{% endif %}
+<td> <span class="allergy">&nbsp;</span> </td>
+{% for sunday in sundays %}
+<td></td>
+{% endfor %}
+</tr>
+{% endfor %}
+
+
 </table>
 </div>
 
