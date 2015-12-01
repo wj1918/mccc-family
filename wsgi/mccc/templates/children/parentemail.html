@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>>Grade {{grade}} Parent Email </title>
+
+<style type="text/css">
+body{
+    font-size:large;
+    line-height: 150%;
+}
+table{
+    border-collapse:collapse;
+    border:1px solid black;
+    width:100%;
+    height:100%;
+}
+
+table td,th{
+    border:1px solid black;
+}
+
+.inner { 
+    height: 100%;
+}
+
+.allergy {
+    font-size: smaller;
+}
+
+</style>
+</head>
+
+{% block content %}
+
+{% if grade in "N" %}
+<h2>Nursery Parent Email </h2>
+{% else %}
+<h2>Grade {{grade}} Parent Email </h2>
+{% endif %}
+
+<div class="inner">
+
+{% for children in children_list %}
+{{ children.email }};
+
+{% endfor %}
+</div>
+
+{% endblock %}
+
+<body>
+
+</body>
+</html>

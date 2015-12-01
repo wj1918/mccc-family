@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" /> 
+
+<title>>Grade {{grade}} Parent Contact </title>
+
+<style type="text/css">
+body{
+    font-size:large;
+    line-height: 150%;
+}
+table{
+    border-collapse:collapse;
+    border:1px solid black;
+    width:100%;
+    height:100%;
+}
+
+table td,th{
+    border:1px solid black;
+}
+
+.inner { 
+    height: 100%;
+}
+
+.allergy {
+    font-size: smaller;
+}
+
+</style>
+</head>
+
+{% block content %}
+
+{% if grade in "N" %}
+<h2>Nursery Parent Contact </h2>
+{% else %}
+<h2>Grade {{grade}} Parent Contacts </h2>
+{% endif %}
+
+<div class="inner">
+<table>
+<tr>
+<th style="width:100px;">Name</th>
+<th style="width:50px;" >Grade</th>
+<th style="width:50px;" >Father</th>
+<th style="width:50px;" >Mother</th>
+<th style="width:50px;" >Home Phone</th>
+<th style="width:50px;" >Email</th>
+</tr>    
+
+{% for children in children_list %}
+<tr>
+<td>{{ children.first_last }}</td>
+<td>{{ children.ssgrade }}</td>
+<td>{{ children.fathers_english_name }} </td>
+<td>{{ children.mothers_english_name }} </td>
+<td>{{ children.home }}</td>
+<td>{{ children.email }}</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+
+{% endblock %}
+
+<body>
+
+</body>
+</html>
