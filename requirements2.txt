@@ -1,5 +1,5 @@
 MySQL-python
-Django===1.8.4
+Django==1.8.4
 pinax-theme-bootstrap==7.1.0
 django-bootstrap-form==3.2
 django-user-accounts==1.2.0
@@ -10,3 +10,5 @@ python-social-auth==0.2.13
 singledispatch
 unicodecsv
 pycrypto==2.6.1
+django-autocomplete-light==2.2.10
+openpyxl==2.3.1
