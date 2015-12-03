@@ -17,7 +17,7 @@ class CmMaster(models.Model):
         return self.first_last
     
     id = models.AutoField(primary_key=True)  # AutoField?
-    person = models.ForeignKey(Person,db_column='person_id')
+    person = models.OneToOneField(Person,db_column='person_id')
     first_last = models.CharField(max_length=100, blank=True)
     ssgroup = models.CharField(max_length=100, blank=True)
     ssgrade = models.CharField(max_length=100, blank=True)
