@@ -10,13 +10,14 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from family.models import Person
 
-    
 class CmMaster(models.Model):
     def __str__(self):
         return self.first_last
     
     id = models.AutoField(primary_key=True)  # AutoField?
+    person = models.ForeignKey(Person,db_column='person_id')
     first_last = models.CharField(max_length=100, blank=True)
     ssgroup = models.CharField(max_length=100, blank=True)
     ssgrade = models.CharField(max_length=100, blank=True)

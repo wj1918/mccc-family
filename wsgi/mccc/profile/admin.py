@@ -16,7 +16,6 @@ from functools import update_wrapper
 from django.utils import six
 from models import ProfileFamily
 from models import ProfilePerson
-import autocomplete_light
 
 # admin site cusrom user admin
 class ProfileInline(admin.StackedInline):
@@ -27,7 +26,6 @@ class ProfileInline(admin.StackedInline):
 
 class CustomUserAdmin(UserAdmin):
     inlines = [ProfileInline,]
-#    form = autocomplete_light.modelform_factory(ProfilePerson, exclude = [])
 
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
