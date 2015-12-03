@@ -45,9 +45,8 @@ class ProfilePerson(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-    family =models.OneToOneField(ProfileFamily)
+    person =models.OneToOneField(ProfilePerson)
     def __unicode__(self):
         return self.user.username
     class Meta:
         db_table = 'user_profile'
-

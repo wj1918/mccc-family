@@ -16,25 +16,28 @@ from functools import update_wrapper
 from django.utils import six
 from models import ProfileFamily
 from models import ProfilePerson
+import autocomplete_light
 
+# admin site cusrom user admin
 class ProfileInline(admin.StackedInline):
     model = UserProfile
     fk_name = 'user'
     max_num = 1
-    raw_id_fields = ("family",)
+    raw_id_fields = ("person",)
 
 class CustomUserAdmin(UserAdmin):
     inlines = [ProfileInline,]
+#    form = autocomplete_light.modelform_factory(ProfilePerson, exclude = [])
 
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
 
-class ProfileFamilyAdminLookup(admin.ModelAdmin):
-    list_display = ('id','address','city','state','zip', 'home1', 'homefax')
-    list_filter = ['status','city','state']
-    search_fields = ['address','city','home1']
+#The raw_id_fields widget shows a magnifying glass button next to the field which allows users to search for and select a value
+class ProfilePersonAdminPicker(admin.ModelAdmin):
+    list_display = ('id','last','first','chinese','sex','email', 'cphone','role','birthday',)
+    search_fields = ['last','first','chinese','email', 'cphone',]
 
-admin.site.register(ProfileFamily, ProfileFamilyAdminLookup)
+admin.site.register(ProfilePerson, ProfilePersonAdminPicker)
 
 class ProfilePersonInline(admin.StackedInline):
     exclude =['role',]
@@ -42,17 +45,18 @@ class ProfilePersonInline(admin.StackedInline):
     extra = 0
     
     def has_add_permission(self, request):
-        return True
+        return False
 
     def has_change_permission(self, request, obj=None):
         return self.has_module_permission(request);
 
     def has_delete_permission(self, request, obj=None):
-        return self.has_module_permission(request);
+        return False
 
     def has_module_permission(self, request):
         return request.user.is_active and request.user.is_staff
 
+# Below is for profile site
 
 class ProfileFamilyAdmin(admin.ModelAdmin):
     inlines = [ProfilePersonInline]
@@ -79,7 +83,7 @@ class ProfileFamilyAdmin(admin.ModelAdmin):
         return my_urls
 
     def change_view(self, request):
-        objectid='%s' % request.user.userprofile.family.id
+        objectid='%s' % request.user.userprofile.person.family.id
         return super(ProfileFamilyAdmin,self).changeform_view(request, objectid)
 
     def has_add_permission(self, request):
