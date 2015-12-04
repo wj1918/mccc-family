@@ -30,6 +30,7 @@ urlpatterns = patterns('',
     url(r'^library/', include(library_site.urls)),
     url(r'^profile/', include(profile_site.urls)),
     url(r'^database/', database),
+    url(r'^autocomplete/', include('autocomplete_light.urls')),
 )
 urlpatterns += children_urlpatterns
 urlpatterns += staticfiles_urlpatterns()

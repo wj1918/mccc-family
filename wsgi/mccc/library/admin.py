@@ -2,11 +2,14 @@
 from django.contrib.admin import AdminSite
 from models import McccLibrary
 from django.contrib import admin
+from django.shortcuts import redirect
 
 class LibrarySite(AdminSite):
     site_header = 'Library'
 
-    
+    def login(self, request, extra_context=None):
+        return redirect('home')
+
 class McccLibraryAdmin(admin.ModelAdmin):
 
     list_display = ('title', 'author', 'itemtype','classnumber','volume','clutternumber', 'inputdate')

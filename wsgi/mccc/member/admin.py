@@ -3,6 +3,7 @@ from functools import wraps
 from collections import OrderedDict
 from django.db.models import FieldDoesNotExist
 from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.contrib import admin
 from django.contrib.admin import AdminSite
 from singledispatch import singledispatch  # pip install singledispatch
@@ -129,6 +130,9 @@ def _(description):
 
 class MemberSite(AdminSite):
     site_header = 'Member'
+
+    def login(self, request, extra_context=None):
+        return redirect('home')
 
     
 class McccDirAdmin(admin.ModelAdmin):

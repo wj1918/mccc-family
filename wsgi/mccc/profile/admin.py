@@ -2,6 +2,7 @@
 from django.utils.encoding import force_text, python_2_unicode_compatible
 from django.utils.translation import string_concat, ugettext as _, ungettext
 from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
@@ -130,6 +131,8 @@ class ProfileSite(AdminSite):
         model_admin= self._registry[ProfileFamily]
         return model_admin.get_urls()
 
+    def login(self, request, extra_context=None):
+        return redirect('home')
 
 profile_site = ProfileSite(name="profile")
 profile_site.register(ProfileFamily, ProfileFamilyAdmin)
