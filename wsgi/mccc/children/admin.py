@@ -32,7 +32,7 @@ class PersonPicker(admin.ModelAdmin):
         return False
 
     def has_change_permission(self, request, obj=None):
-        return False
+        return True
 
     def has_delete_permission(self, request, obj=None):
         return False
