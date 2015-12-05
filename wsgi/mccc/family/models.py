@@ -26,8 +26,10 @@ class Family(models.Model):
 
 class Person(models.Model):
     def __unicode__(self):    
-        return '{0}, {1}'.format(self.first, self.last)
-    
+        list0 = [self.first, self.last]
+        flist =[x for x in list0 if x is not None]
+        firstlast= u','.join(flist).encode('utf-8').strip()
+        return u' '.join((firstlast, self.chinese)) if self.chinese else firstlast
     id = models.AutoField(db_column='PersonID',primary_key=True,verbose_name="Person ID")
     last = models.CharField(db_column='Last', max_length=30, blank=True)  # Field name made lowercase.
     first = models.CharField(db_column='First', max_length=40, blank=True)  # Field name made lowercase.
