@@ -17,7 +17,8 @@ class McccLibrary(models.Model):
         managed = False
         db_table = 'MCCC_Library'
         permissions  = (('readonly', 'Can Read Only Library'),)
-
+        verbose_name = "book or CD"
+        verbose_name_plural = "books or CDs"
 """
 
 CREATE TABLE IF NOT EXISTS `MCCC_Library` (

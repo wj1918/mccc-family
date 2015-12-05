@@ -16,4 +16,6 @@ class McccDir(models.Model):
         managed = False
         db_table = 'MCCC_Dir'
         permissions  = (('readonly', 'Can Read Only Member'),)
+        verbose_name = "member"
+        verbose_name_plural = "member directory"
 

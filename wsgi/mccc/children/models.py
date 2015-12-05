@@ -69,3 +69,5 @@ class CmMaster(models.Model):
         managed = False
         db_table = 'MCCC_CM_Master'
         permissions  = (('readonly', 'Can Read Only Children'),)
+        verbose_name = "child"
+        verbose_name_plural = "children"
