@@ -8844,7 +8844,7 @@ footer {
 @media (min-width: 768px) {
   .social-login-row > div {
     float: left;
-    width: 33.33333333%;
+    width: 25%;
   }
 }
 .social-login-row > div > a {

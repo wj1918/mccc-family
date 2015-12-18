@@ -51,7 +51,7 @@ INSTALLED_APPS = (
     "eventlog",
     "metron",
     "social.apps.django_app.default",
-
+    'autocomplete_light',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -143,13 +143,10 @@ ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 2
 
 AUTHENTICATION_BACKENDS = [
     "social.backends.google.GoogleOAuth2",
-#    "social.backends.live.LiveOAuth2",
     "mccc.live.LiveConnect",
-    "social.backends.yahoo.YahooOAuth",
+    "social.backends.yahoo.YahooOAuth2",
     "django.contrib.auth.backends.ModelBackend",
     "social.backends.facebook.FacebookOAuth2",
-#    "social.backends.twitter.TwitterOAuth",
-#    "social.backends.yahoo.YahooOpenId",
 ]
 
 SOCIAL_AUTH_PIPELINE = [
@@ -180,6 +177,8 @@ SOCIAL_AUTH_YAHOO_OAUTH_KEY = "${SOCIAL_AUTH_YAHOO_OAUTH_KEY}"
 SOCIAL_AUTH_YAHOO_OAUTH_SECRET = "${SOCIAL_AUTH_YAHOO_OAUTH_SECRET}"
 SOCIAL_AUTH_LIVE_KEY = "${SOCIAL_AUTH_LIVE_KEY}"
 SOCIAL_AUTH_LIVE_SECRET = "${SOCIAL_AUTH_LIVE_SECRET}"
+SOCIAL_AUTH_YAHOO_OAUTH2_KEY = "${SOCIAL_AUTH_YAHOO_OAUTH2_KEY}"
+SOCIAL_AUTH_YAHOO_OAUTH2_SECRET = "${SOCIAL_AUTH_YAHOO_OAUTH2_SECRET}"
 
 SOCIAL_AUTH_LIVE_SCOPE = ["wl.emails"]
 SOCIAL_AUTH_FACEBOOK_SCOPE = ["email"]
