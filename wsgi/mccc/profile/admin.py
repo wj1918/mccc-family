@@ -132,7 +132,7 @@ class ProfileSite(AdminSite):
         return model_admin.get_urls()
 
     def login(self, request, extra_context=None):
-        return redirect('home')
+        return redirect('%s?next=%s' % (reverse('home'), request.REQUEST.get('next', '')))
 
 profile_site = ProfileSite(name="profile")
 profile_site.register(ProfileFamily, ProfileFamilyAdmin)

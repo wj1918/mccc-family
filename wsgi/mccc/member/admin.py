@@ -2,8 +2,10 @@ import unicodecsv
 from functools import wraps
 from collections import OrderedDict
 from django.db.models import FieldDoesNotExist
+from urllib import quote
 from django.http import HttpResponse
 from django.shortcuts import redirect
+from django.core.urlresolvers import reverse
 from django.contrib import admin
 from django.contrib.admin import AdminSite
 from singledispatch import singledispatch  # pip install singledispatch
@@ -132,9 +134,8 @@ class MemberSite(AdminSite):
     site_header = 'Member'
 
     def login(self, request, extra_context=None):
-        return redirect('home')
+        return redirect('%s?next=%s' % (reverse('home'), request.REQUEST.get('next', '')))
 
-    
 class McccDirAdmin(admin.ModelAdmin):
     list_display = ('last_nm','first_nm','chinese_nm','wf_first','wf_chinese_nm','home_phone', 'work_phone','address', 'worship')
     list_filter = ['worship']

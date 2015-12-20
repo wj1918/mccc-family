@@ -2,22 +2,22 @@
     <p class="lead text-center">Log in with one of the following:</p>
     <div class="social-login-row">
         <div>
-            <a href="{% url "social:begin" "google-oauth2" %}">
+            <a href="{% url "social:begin" "google-oauth2"%}{% if request.GET.next %}?next={{request.GET.next}}{% endif %}">
                 <i class="fa fa-google"></i> Google
             </a>
         </div>
         <div>
-            <a href="{% url "social:begin" "live" %}">
+            <a href="{% url "social:begin" "live"%}{% if request.GET.next %}?next={{request.GET.next}}{% endif %}">
                 <i class="fa fa-live"></i>Hotmail
             </a>
         </div>
         <div>
-            <a href="{% url "social:begin" "facebook" %}">
+            <a href="{% url "social:begin" "facebook"%}{% if request.GET.next %}?next={{request.GET.next}}{% endif %}">
                 <i class="fa fa-facebook-square"></i> Facebook
             </a>
         </div>        
         <div>
-            <a href="{% url "social:begin" "yahoo-oauth2" %}">
+            <a href="{% url "social:begin" "yahoo-oauth2"%}{% if request.GET.next %}?next={{request.GET.next}}{% endif %}">
                 <i class="fa fa-yahoo"></i> Yahoo
             </a>
         </div>

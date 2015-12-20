@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import AdminSite
 from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from children.models import CmMaster
 from family.models import Person
@@ -10,7 +11,7 @@ class ChildrenSite(AdminSite):
     site_header = 'Children'
     
     def login(self, request, extra_context=None):
-        return redirect('home')
+        return redirect('%s?next=%s' % (reverse('home'), request.REQUEST.get('next', '')))
 
 class CmMasterAdmin(admin.ModelAdmin):
     list_display = ['first_last','first_last','ssgrade','ssactive','choiractive','choirgrade','fname','lname','chinese_name','gender','grade','dob',
