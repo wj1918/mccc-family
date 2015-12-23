@@ -8,31 +8,34 @@
 {% block body_base %}
     <section class="jumbotron">
         <div class="container">
-            {% include "_messages.html" %}
             <h2 class="text-center"> Family Contact</h2>
 
                 {{ form.non_field_errors }}
+                
                 <div class="fieldWrapper">
-                    {{ form.subject.errors }}
-                    <label for="{{ form.subject.id_for_label }}">Email subject:</label>
-                    {{ form.subject }}
+                    {{ form.home_address.errors }}
+                    <label for="{{ form.home_address.id_for_label }}">Home Address:</label>
+                    {{ form.home_address }}
                 </div>
+
                 <div class="fieldWrapper">
-                    {{ form.message.errors }}
-                    <label for="{{ form.message.id_for_label }}">Your message:</label>
-                    {{ form.message }}
+                    {{ form.home_phone.errors }}
+                    <label for="{{ form.home_phone.id_for_label }}">Home Phone:</label>
+                    {{ form.home_phone }}
                 </div>
+
                 <div class="fieldWrapper">
-                    {{ form.sender.errors }}
-                    <label for="{{ form.sender.id_for_label }}">Your email address:</label>
-                    {{ form.sender }}
+                    {{ form.cell_phone1.errors }}
+                    <label for="{{ form.cell_phone1.id_for_label }}">Cell Phone 1:</label>
+                    {{ form.home_phone }}
                 </div>
+
                 <div class="fieldWrapper">
-                    {{ form.cc_myself.errors }}
-                    <label for="{{ form.cc_myself.id_for_label }}">CC yourself?</label>
-                    {{ form.cc_myself }}
+                    {{ form.cell_phone2.errors }}
+                    <label for="{{ form.cell_phone2.id_for_label }}">Cell Phone 2:</label>
+                    {{ form.home_phone }}
                 </div>
-            
+
         </div>
     </section>
 {% endblock %}
