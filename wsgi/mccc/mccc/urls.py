@@ -12,6 +12,7 @@ from library.admin import library_site
 from profile.admin import profile_site
 from children.urls import urlpatterns as children_urlpatterns
 from views import database;
+from contact.views import ContactView;
 
 urlpatterns = patterns('',
     # Examples:
@@ -31,6 +32,7 @@ urlpatterns = patterns('',
     url(r'^profile/', include(profile_site.urls)),
     url(r'^database/', database),
     url(r'^autocomplete/', include('autocomplete_light.urls')),
+    url(r"^contact/", ContactView.as_view(), name="contact"),
 )
 urlpatterns += children_urlpatterns
 urlpatterns += staticfiles_urlpatterns()
