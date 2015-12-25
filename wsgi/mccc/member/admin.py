@@ -11,7 +11,7 @@ from django.contrib.admin import AdminSite
 from singledispatch import singledispatch  # pip install singledispatch
 
 from models import McccDir
-
+from contact.utils import create_update_invite
 
 def prep_field(obj, field):
     """
@@ -147,7 +147,17 @@ class McccDirAdmin(admin.ModelAdmin):
         return False
     def has_delete_permission(self, request, obj=None):
         return False
-    actions = [download_as_csv("Download selected objects as CSV file"),]
+
+    def create_invite(self, request, queryset):
+        rows_updated = create_update_invite(queryset)
+        if rows_updated == 1:
+            message_bit = "1 update invite was"
+        else:
+            message_bit = "%s stories were" % rows_updated
+        self.message_user(request, "%s successfully created." % message_bit)
+    create_invite.short_description = "Create update invite"
+
+    actions = [download_as_csv("Download selected objects as CSV file"), create_invite,]
     download_as_csv_fields=[
         'last_nm',
         'first_nm', 
