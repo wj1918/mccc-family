@@ -1,11 +1,13 @@
 import logging
 import random
 import string
+import datetime
 from logging_tree import printout
+from django.conf import settings
 from family.models import Family
 from family.models import Person
 from contact.models import UpdateInvite
-from .tokens import token_generator
+from .tokens import access_token_generator
 
 logger = logging.getLogger("django")
 #printout()
@@ -41,9 +43,9 @@ def create_update_invite(queryset):
             m.invite_email=p1.email
             m.email1=p1.email
             m.cell_phone1=p1.cphone
-            #token = token_generator.make_token(person=p1) 
-            token=random_string()
+            token = access_token_generator.make_token() 
             m.access_token=token
+            m.expiration_date=datetime.date.today()+ datetime.timedelta(days=settings.ACCESS_TOKEN_EXPIRATION_DAYS)
             m.save()
             count+=1
             
@@ -59,9 +61,9 @@ def create_update_invite(queryset):
             m.invite_email=p2.email
             m.email2=p2.email
             m.cell_phone2=p2.cphone
-            #token = token_generator.make_token(person=p2) 
-            token=random_string()
+            token = access_token_generator.make_token() 
             m.access_token=token
+            m.expiration_date=datetime.date.today()+ datetime.timedelta(days=settings.ACCESS_TOKEN_EXPIRATION_DAYS)
             m.pk=None
             m.save()
             count+=1

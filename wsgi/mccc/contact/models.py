@@ -31,7 +31,9 @@ class UpdateInvite(models.Model):
     first_nm2 = models.CharField( max_length=40, blank=True, null=True, verbose_name="NM2_E")
     chinese_nm2 = models.CharField( max_length=20, blank=True, null=True, verbose_name="NM2_C")
     cell_phone2 = models.CharField( max_length=40, blank=True, null=True, verbose_name="NM2_Cell")
-
+    
+    creation_date = models.DateTimeField(auto_now_add=True)
+    expiration_date = models.DateTimeField()
 
     class Meta:
         db_table = 'MCCC_Update_Invite'
