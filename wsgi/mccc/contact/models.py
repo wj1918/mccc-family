@@ -15,6 +15,13 @@ class UpdateInvite(models.Model):
         (EXPIRED, 'Expired'),
         (LOGIN_EXISTS, 'Login Existss'),
     )
+    
+    COUPLE='C'
+    SINGLE='S'
+    DIR_TYPE = (
+        (COUPLE, 'Couple'),
+        (SINGLE, 'Single'),
+    )
                                       
     access_token = models.CharField( max_length=40)
     invite_state  = models.CharField( max_length=1, choices=INVITE_STATE, default=ACTIVE)
@@ -24,6 +31,8 @@ class UpdateInvite(models.Model):
     address = models.CharField( max_length=130, blank=True, null=True)
     home_phone = models.CharField( max_length=40, blank=True, null=True) 
     worship = models.CharField( max_length=9, blank=True, null=True)
+    dir_type  = models.CharField( max_length=1, choices=DIR_TYPE, default=COUPLE, verbose_name="type")
+    is_member= models.BooleanField(default=True)
 
     last_nm1 = models.CharField(max_length=30, blank=True, null=True, verbose_name="Last_NM")
     first_nm1 = models.CharField( max_length=40, blank=True, null=True, verbose_name="NM1_E")
@@ -36,6 +45,8 @@ class UpdateInvite(models.Model):
     
     creation_date = models.DateTimeField(auto_now_add=True)
     expiration_date = models.DateTimeField(null=True)
+
+    comment = models.CharField( max_length=400, null=True)
 
     class Meta:
         db_table = 'MCCC_Update_Invite'

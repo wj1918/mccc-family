@@ -9,6 +9,7 @@ from family.models import Person
 from contact.models import UpdateInvite
 from .tokens import access_token_generator
 from profile.models import UserProfile
+from django.core.mail import send_mail
 
 logger = logging.getLogger("django")
 #printout()
@@ -34,7 +35,8 @@ def create_update_invite(queryset):
         m.worship=o.worship
         m.first_nm2=o.wf_first
         m.chinese_nm2=o.wf_chinese_nm
-    
+        m.dir_type=UpdateInvite.COUPLE if ( o.wf_first or o.wf_chinese_nm)  else UpdateInvite.SINGLE
+
         p1=None
         if(o.first_nm and o.last_nm):
             p1=Person.objects.get(family__id=o.family_id, first=o.first_nm, last=o.last_nm)
@@ -46,6 +48,7 @@ def create_update_invite(queryset):
             m.invite_email=p1.email
             m.email1=p1.email
             m.cell_phone1=p1.cphone
+            m.is_member=p1.member=="Y"
             if login_exists(p1):
                 m.invite_state=UpdateInvite.LOGIN_EXISTS
             else:    
@@ -68,6 +71,7 @@ def create_update_invite(queryset):
             m.invite_email=p2.email
             m.email2=p2.email
             m.cell_phone2=p2.cphone
+            m.is_member=p2.member=="Y"
             if login_exists(p2):
                 m.invite_state=UpdateInvite.LOGIN_EXISTS
             else:    
@@ -80,3 +84,9 @@ def create_update_invite(queryset):
             count+=1
 
     return count
+
+
+def send_email(queryset):
+    for o in queryset:
+        send_mail('Your Email subject', 'Your Email message.', settings.EMAIL_HOST_USER, [o.invite_email], fail_silently=False)
+        
