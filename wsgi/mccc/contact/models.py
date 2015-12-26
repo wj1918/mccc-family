@@ -8,10 +8,12 @@ class UpdateInvite(models.Model):
     ACTIVE = 'A'
     CANCELLED = 'C'
     EXPIRED = 'E'
+    LOGIN_EXISTS ='L'
     INVITE_STATE = (
         (ACTIVE, 'Active'),
         (CANCELLED, 'Cancelled'),
         (EXPIRED, 'Expired'),
+        (LOGIN_EXISTS, 'Login Existss'),
     )
                                       
     access_token = models.CharField( max_length=40)
@@ -33,7 +35,7 @@ class UpdateInvite(models.Model):
     cell_phone2 = models.CharField( max_length=40, blank=True, null=True, verbose_name="NM2_Cell")
     
     creation_date = models.DateTimeField(auto_now_add=True)
-    expiration_date = models.DateTimeField()
+    expiration_date = models.DateTimeField(null=True)
 
     class Meta:
         db_table = 'MCCC_Update_Invite'
