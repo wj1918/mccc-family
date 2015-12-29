@@ -1,23 +1,56 @@
 from django.http import HttpResponse, HttpResponseRedirect
+from django.utils.html import escape
 from social.p3 import quote
 from social.utils import sanitize_redirect, user_is_authenticated, \
                          user_is_active, partial_pipeline_data, setting_url
-
+from .models import EmailSession
 
 def do_auth(backend, redirect_name='next'):
-    data = backend.strategy.request_data(merge=False)
-
-    for field_name in backend.setting('FIELDS_STORED_IN_SESSION', []):
-        if field_name in data:
-            backend.strategy.session_set(field_name, data[field_name])
+#    return HttpResponse(escape(repr(data)))
+    """ backend.start() was overwritten in GmailOAuth2 """        
     return backend.start()
+    
+"""
+                \_ self.strategy.redirect(self.auth_url())
+                   \_ BaseOAuth2.auth_url()
+                      \_ self.get_or_create_state()
+"""
 
-def do_complete(backend, login, user=None, redirect_name='next',
+def do_complete(backend, login, user, redirect_name='next',
                 *args, **kwargs):
 
-    data = backend.strategy.request_data()
-    user = backend.complete(user=user, *args, **kwargs)
-    return HttpResponse("Thank You!")
+    backend.complete(user=user, *args, **kwargs)
+    """
+        Function call sequence of backend.complete:
+        
+         \_backend.base.complete(self, *args, **kwargs)
+            \_ BaseOAuth2.auth_complete(*args, **kwargs)
+               | validate_state()
+               | process_error(self.data)
+               | following is overwritren in GmailOAuth2
+               | exchange code for token    
+                \_ oauth.do_auth(self, access_token, *args, **kwargs)
+                  | Finish the auth process once the access_token was retrieved
+                  | pass user data and access token to next function
+                   \_  self.strategy.authenticate(*args, **kwargs)
+                   \_ backend.base.authenticate(*args, **kwargs)
+                      |Authenticate user using social credentials
+                      |overwritten by next function
+                   \_ oauthemail.backends.google.GmailOAuth2.authenticate         
+
+        BaseOAuth2.auth_complete need to be overwritten in order not to retrieve the token.
+
+    """
+    data = backend.data
+    
+    es=EmailSession()
+    es.user=user
+    es.state=data["state"]
+    es.session_state=data["session_state"]
+    es.save()
+
+    return HttpResponse(escape(repr(backend.data)))
+#    return HttpResponse("Thank You!")
 
 def do_disconnect(backend, user, association_id=None, redirect_name='next',
                   *args, **kwargs):

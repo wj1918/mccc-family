@@ -41,6 +41,7 @@ def auth(request, backend):
     return do_auth(request.backend, redirect_name=REDIRECT_FIELD_NAME)
 
 
+@login_required
 @never_cache
 @csrf_exempt
 @psa('{0}:complete'.format(NAMESPACE))
@@ -82,6 +83,7 @@ def _do_login(backend, user, social_user):
 
 @never_cache
 @csrf_protect
+@login_required
 def show_login(request):
   sign_in_url = reverse("oauthemail:begin", args=("gmail-oauth2",))
   return HttpResponse('<a href="' + sign_in_url +'">Click here to sign in your mail</a>')
