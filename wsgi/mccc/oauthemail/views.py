@@ -86,4 +86,18 @@ def _do_login(backend, user, social_user):
 @login_required
 def show_login(request):
   sign_in_url = reverse("oauthemail:begin", args=("gmail-oauth2",))
+
   return HttpResponse('<a href="' + sign_in_url +'">Click here to sign in your mail</a>')
+
+
+@never_cache
+@csrf_protect
+@login_required
+def test_email(request):
+    uri=reverse("oauthemail:complete", args=("gmail-oauth2",))
+    redirect_uri = request.build_absolute_uri(uri)
+    from oauthemail.utils import load_strategy
+    s=load_strategy()
+    from oauthemail.utils import load_backend
+    b=load_backend(s,"gmail-oauth2",redirect_uri)
+    b.get_access_token('JPWkUkGj2OtAeD1VFBxiiZHDlnZ4Zafq', '4/SzdTL24kyYvUF6ANkmChaJZp7enPv1QjAuLa9oIS384')

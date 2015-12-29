@@ -29,5 +29,6 @@ urlpatterns = patterns('oauthemail.views',
     url(r'^disconnect/(?P<backend>[^/]+)/(?P<association_id>[^/]+){0}$'
             .format(extra), 'disconnect', name='disconnect_individual'),
     url(r'^show_login/$', "show_login"),
+    url(r'^test_email/$', "test_email"),
 
 )

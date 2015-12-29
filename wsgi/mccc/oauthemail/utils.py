@@ -10,6 +10,7 @@ from social.utils import setting_name, module_member
 from social.exceptions import MissingBackend
 from social.strategies.utils import get_strategy
 from social.backends.utils import get_backend
+from .models import EmailSession
 
 """
 OAUTHEMAIL_BACKENDS = [
@@ -78,3 +79,16 @@ class BackendWrapper(object):
 def strategy(*args, **kwargs):
     warnings.warn('@strategy decorator is deprecated, use @psa instead')
     return psa(*args, **kwargs)
+
+
+def save_oauth_session(user, backend_name, state, session_state, code):
+
+    ess=EmailSession.objects.filter(user=user)  
+    es =ess[0]  if ess.count()>0 else EmailSession()
+    
+    es.user=user
+    es.backend_name=backend_name
+    es.state=state
+    es.session_state=session_state
+    es.code=code
+    es.save()

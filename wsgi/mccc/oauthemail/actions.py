@@ -3,7 +3,7 @@ from django.utils.html import escape
 from social.p3 import quote
 from social.utils import sanitize_redirect, user_is_authenticated, \
                          user_is_active, partial_pipeline_data, setting_url
-from .models import EmailSession
+from .utils import save_oauth_session
 
 def do_auth(backend, redirect_name='next'):
 #    return HttpResponse(escape(repr(data)))
@@ -42,15 +42,10 @@ def do_complete(backend, login, user, redirect_name='next',
 
     """
     data = backend.data
-    
-    es=EmailSession()
-    es.user=user
-    es.state=data["state"]
-    es.session_state=data["session_state"]
-    es.save()
+    save_oauth_session(user, backend.name, data["state"], data["session_state"], data["code"] )
 
-    return HttpResponse(escape(repr(backend.data)))
-#    return HttpResponse("Thank You!")
+#    return HttpResponse(escape(repr(backend.data)))
+    return HttpResponse("Login successfully!")
 
 def do_disconnect(backend, user, association_id=None, redirect_name='next',
                   *args, **kwargs):
