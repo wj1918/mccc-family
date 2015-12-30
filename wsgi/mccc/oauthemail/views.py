@@ -22,11 +22,13 @@ def outlook(request):
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.core import mail
 from django.contrib.auth import login, REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.decorators.http import require_POST
 from django.views.decorators.cache import never_cache
+from django.utils.html import escape
 
 from .actions import do_auth, do_complete, do_disconnect
 from .utils import psa, send_email
@@ -94,5 +96,9 @@ def show_login(request):
 @csrf_protect
 @login_required
 def test_email(request):
-    token=send_email(request)
-    return HttpResponse('token {0}'.format (token))
+
+    with mail.get_connection("oauthemail.smtp.OauthEmailBackend", user=request.user) as connection:
+        mail.EmailMessage('Subject here', 
+            'Here is the message.', 
+            to=['Jun Wang<wj1918@hotmail.com>'], connection=connection).send()    
+    return HttpResponse("Email Sent OK.")

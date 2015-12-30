@@ -43,6 +43,10 @@ def do_complete(backend, login, user, redirect_name='next',
     """
     data = backend.data
     if data["email"] == user.email:
+        data.update({
+            'host':backend.setting('HOST'),
+            'port':backend.setting('PORT'),
+            })    
         save_oauth_session(user, backend.name, data)
         return HttpResponse("Login successfully! Your email is '{0} &lt;{1}&gt;' ".format(data["display_name"],data["email"]) )
     else:

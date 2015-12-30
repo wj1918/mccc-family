@@ -1,6 +1,8 @@
 import warnings
 
 from functools import wraps
+import base64
+import smtplib
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -95,17 +97,56 @@ def save_oauth_session(user, backend_name, data):
     es.display_name=data["display_name"]
     es.token_type=data["token_type"]
     es.access_token=data["access_token"]
+    es.host=data["host"]
+    es.port=data["port"]
     es.save()
 
-def send_email(request):
-    uri=reverse("oauthemail:complete", args=("gmail-oauth2",))
-    redirect_uri = request.build_absolute_uri(uri)
-    from oauthemail.utils import load_strategy
-    s=load_strategy()
-    from oauthemail.utils import load_backend
-    b=load_backend(s,"gmail-oauth2",redirect_uri)
-    es=EmailSession.objects.get(user=request.user)  
-    state=es.state
-    code=es.code
-    token=b.get_access_token(state, code)
-    return toke
+def send_email(user):
+    es=EmailSession.objects.get(user=user)
+    auth_string=GenerateOAuth2String(user.email,es.access_token,base64_encode=False)
+    TestSmtpAuthentication(user.email,auth_string)
+    
+    return auth_string
+
+def get_user_auth_info(user):
+    es=EmailSession.objects.get(user=user)
+    auth_string = 'user=%s\1auth=Bearer %s\1\1' % (user.email, es.access_token)
+    return {'auth_string':auth_string, "host": es.host, "port":es.port } 
+
+def GenerateOAuth2String(username, access_token, base64_encode=True):
+  """Generates an IMAP OAuth2 authentication string.
+
+  See https://developers.google.com/google-apps/gmail/oauth2_overview
+
+  Args:
+    username: the username (email address) of the account to authenticate
+    access_token: An OAuth2 access token.
+    base64_encode: Whether to base64-encode the output.
+
+  Returns:
+    The SASL argument for the OAuth2 mechanism.
+  """
+  auth_string = 'user=%s\1auth=Bearer %s\1\1' % (username, access_token)
+  if base64_encode:
+    auth_string = base64.b64encode(auth_string)
+  return auth_string
+
+
+
+def TestSmtpAuthentication(user, auth_string):
+  """Authenticates to SMTP with the given auth_string.
+  Args:
+    user: The Gmail username (full email address)
+    auth_string: A valid OAuth2 string, not base64-encoded, as returned by
+        GenerateOAuth2String.
+  """
+  smtp_conn = smtplib.SMTP('smtp.gmail.com', 587)
+  smtp_conn.set_debuglevel(True)
+  smtp_conn.ehlo('test')
+  smtp_conn.starttls()
+  smtp_conn.docmd('AUTH', 'XOAUTH2 ' + base64.b64encode(auth_string))
+  
+  msg = "YOUR Test MESSAGE!"
+  smtp_conn.sendmail(user, "wj1918@hotmail.com", msg)
+  smtp_conn.quit()
+
