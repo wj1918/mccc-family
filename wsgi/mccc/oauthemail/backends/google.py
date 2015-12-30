@@ -8,10 +8,21 @@ class GmailOAuth2(GoogleOAuth2):
         return self.strategy.redirect(self.auth_url())
 
     @handle_http_errors
-    def auth_complete(self, *args, **kwargs):
-        state = self.validate_state()
-        self.process_error(self.data)
+    def do_auth(self, access_token, *args, **kwargs):
+        """Finish the auth process once the access_token was retrieved"""
+        data = self.user_data(access_token, *args, **kwargs)
+        response = kwargs.get('response') or {}
+        response.update(data or {})
+        kwargs.update({'response': response, 'backend': self})
+        """ remove authenticate function in  GoogleOAuth2 """
 
+        self.data.update( {
+            'email': response["emails"][0]["value"], 
+            'display_name': response["displayName"], 
+            'token_type': response["token_type"],
+            'access_token': response["access_token"],
+        })
+        
     @handle_http_errors
     def get_access_token(self, state, code):
         self.data ['code']=code

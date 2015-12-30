@@ -1,4 +1,6 @@
+from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect
+from django.http import JsonResponse
 from django.utils.html import escape
 from social.p3 import quote
 from social.utils import sanitize_redirect, user_is_authenticated, \
@@ -27,10 +29,10 @@ def do_complete(backend, login, user, redirect_name='next',
             \_ BaseOAuth2.auth_complete(*args, **kwargs)
                | validate_state()
                | process_error(self.data)
-               | following is overwritren in GmailOAuth2
                | exchange code for token    
                 \_ oauth.do_auth(self, access_token, *args, **kwargs)
                   | Finish the auth process once the access_token was retrieved
+                  | following is overwritren in GmailOAuth2
                   | pass user data and access token to next function
                    \_  self.strategy.authenticate(*args, **kwargs)
                    \_ backend.base.authenticate(*args, **kwargs)
@@ -38,15 +40,14 @@ def do_complete(backend, login, user, redirect_name='next',
                       |overwritten by next function
                    \_ oauthemail.backends.google.GmailOAuth2.authenticate         
 
-        BaseOAuth2.auth_complete need to be overwritten in order not to retrieve the token.
-
     """
     data = backend.data
-    save_oauth_session(user, backend.name, data["state"], data["session_state"], data["code"] )
-
-#    return HttpResponse(escape(repr(backend.data)))
-    return HttpResponse("Login successfully!")
-
+    if data["email"] == user.email:
+        save_oauth_session(user, backend.name, data)
+        return HttpResponse("Login successfully! Your email is '{0} &lt;{1}&gt;' ".format(data["display_name"],data["email"]) )
+    else:
+        return HttpResponse("Invalid email account {0}, Please login to {1} ".format(data["email"], user.email))
+        
 def do_disconnect(backend, user, association_id=None, redirect_name='next',
                   *args, **kwargs):
     partial = partial_pipeline_data(backend, user, *args, **kwargs)

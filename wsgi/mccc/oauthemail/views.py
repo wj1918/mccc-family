@@ -29,7 +29,7 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.cache import never_cache
 
 from .actions import do_auth, do_complete, do_disconnect
-from .utils import psa
+from .utils import psa, send_email
 
 
 NAMESPACE = 'oauthemail'
@@ -94,10 +94,5 @@ def show_login(request):
 @csrf_protect
 @login_required
 def test_email(request):
-    uri=reverse("oauthemail:complete", args=("gmail-oauth2",))
-    redirect_uri = request.build_absolute_uri(uri)
-    from oauthemail.utils import load_strategy
-    s=load_strategy()
-    from oauthemail.utils import load_backend
-    b=load_backend(s,"gmail-oauth2",redirect_uri)
-    b.get_access_token('JPWkUkGj2OtAeD1VFBxiiZHDlnZ4Zafq', '4/SzdTL24kyYvUF6ANkmChaJZp7enPv1QjAuLa9oIS384')
+    token=send_email(request)
+    return HttpResponse('token {0}'.format (token))

@@ -33,7 +33,9 @@ urlpatterns = patterns('',
     url(r'^database/', database),
     url(r'^autocomplete/', include('autocomplete_light.urls')),
     url(r"^contact/", ContactView.as_view(), name="contact"),
+    url(r'^oauthemail/', include('oauthemail.urls', namespace="oauthemail")),
 )
+
 urlpatterns += children_urlpatterns
 urlpatterns += staticfiles_urlpatterns()
 

@@ -81,14 +81,31 @@ def strategy(*args, **kwargs):
     return psa(*args, **kwargs)
 
 
-def save_oauth_session(user, backend_name, state, session_state, code):
+def save_oauth_session(user, backend_name, data):
 
     ess=EmailSession.objects.filter(user=user)  
     es =ess[0]  if ess.count()>0 else EmailSession()
     
     es.user=user
     es.backend_name=backend_name
-    es.state=state
-    es.session_state=session_state
-    es.code=code
+    es.state=data["state"]
+    es.session_state=data["session_state"]
+    es.code=data["code"]
+    es.email=data["email"]
+    es.display_name=data["display_name"]
+    es.token_type=data["token_type"]
+    es.access_token=data["access_token"]
     es.save()
+
+def send_email(request):
+    uri=reverse("oauthemail:complete", args=("gmail-oauth2",))
+    redirect_uri = request.build_absolute_uri(uri)
+    from oauthemail.utils import load_strategy
+    s=load_strategy()
+    from oauthemail.utils import load_backend
+    b=load_backend(s,"gmail-oauth2",redirect_uri)
+    es=EmailSession.objects.get(user=request.user)  
+    state=es.state
+    code=es.code
+    token=b.get_access_token(state, code)
+    return toke
