@@ -11,7 +11,7 @@ class EmailSession(models.Model):
     email = models.CharField(max_length=100, null=True,)
     display_name = models.CharField(max_length=100, null=True,)
     token_type = models.CharField(max_length=100, null=True,)
-    access_token = models.CharField(max_length=200, null=True,)
+    access_token = models.TextField(null=True,)
     host = models.CharField(max_length=100, null=True,)
     port = models.IntegerField(null=True,)
 

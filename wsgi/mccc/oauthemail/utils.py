@@ -90,15 +90,15 @@ def save_oauth_session(user, backend_name, data):
     
     es.user=user
     es.backend_name=backend_name
-    es.state=data["state"]
-    es.session_state=data["session_state"]
-    es.code=data["code"]
-    es.email=data["email"]
-    es.display_name=data["display_name"]
-    es.token_type=data["token_type"]
-    es.access_token=data["access_token"]
-    es.host=data["host"]
-    es.port=data["port"]
+    es.state=data.get("state")
+    es.session_state=data.get("session_state")
+    es.code=data.get("code")
+    es.email=data.get("email")
+    es.display_name=data.get("display_name")
+    es.token_type=data.get("token_type")
+    es.access_token=data.get("access_token")
+    es.host=data.get("host")
+    es.port=data.get("port")
     es.save()
 
 def send_email(user):

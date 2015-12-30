@@ -21,7 +21,7 @@ def do_auth(backend, redirect_name='next'):
 def do_complete(backend, login, user, redirect_name='next',
                 *args, **kwargs):
 
-    backend.complete(user=user, *args, **kwargs)
+    response=backend.complete(user=user, *args, **kwargs)
     """
         Function call sequence of backend.complete:
         
@@ -41,7 +41,9 @@ def do_complete(backend, login, user, redirect_name='next',
                    \_ oauthemail.backends.google.GmailOAuth2.authenticate         
 
     """
+    
     data = backend.data
+    
     if data["email"] == user.email:
         data.update({
             'host':backend.setting('HOST'),
@@ -51,7 +53,7 @@ def do_complete(backend, login, user, redirect_name='next',
         return HttpResponse("Login successfully! Your email is '{0} &lt;{1}&gt;' ".format(data["display_name"],data["email"]) )
     else:
         return HttpResponse("Invalid email account {0}, Please login to {1} ".format(data["email"], user.email))
-        
+
 def do_disconnect(backend, user, association_id=None, redirect_name='next',
                   *args, **kwargs):
     partial = partial_pipeline_data(backend, user, *args, **kwargs)

@@ -23,16 +23,3 @@ class GmailOAuth2(GoogleOAuth2):
             'access_token': response["access_token"],
         })
         
-    @handle_http_errors
-    def get_access_token(self, state, code):
-        self.data ['code']=code
-        response = self.request_access_token(
-            self.access_token_url(),
-            data=self.auth_complete_params(state),
-            headers=self.auth_headers(),
-            auth=self.auth_complete_credentials(),
-            method=self.ACCESS_TOKEN_METHOD
-        )
-        self.process_error(response)
-        return response['access_token']
-        

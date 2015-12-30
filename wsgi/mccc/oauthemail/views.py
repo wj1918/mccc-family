@@ -87,9 +87,11 @@ def _do_login(backend, user, social_user):
 @csrf_protect
 @login_required
 def show_login(request):
-  sign_in_url = reverse("oauthemail:begin", args=("gmail-oauth2",))
+  gmail_sign_in_url = reverse("oauthemail:begin", args=("gmail-oauth2",))
+  hotmail_sign_in_url = reverse("oauthemail:begin", args=("hotmail-oauth2",))
 
-  return HttpResponse('<a href="' + sign_in_url +'">Click here to sign in your mail</a>')
+  return HttpResponse('<a href="' + gmail_sign_in_url +'">Click here to sign in gmail</a> '+
+    '<p> ' + '<a href="' + hotmail_sign_in_url +'">Click here to sign in hotmail</a> ')
 
 
 @never_cache
