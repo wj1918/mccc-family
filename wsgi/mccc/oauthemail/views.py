@@ -31,7 +31,7 @@ from django.views.decorators.cache import never_cache
 from django.utils.html import escape
 
 from .actions import do_auth, do_complete, do_disconnect
-from .utils import psa, send_email
+from .utils import psa
 
 
 NAMESPACE = 'oauthemail'

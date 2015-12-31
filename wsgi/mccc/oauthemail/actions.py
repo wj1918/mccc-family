@@ -50,7 +50,8 @@ def do_complete(backend, login, user, redirect_name='next',
             'port':backend.setting('PORT'),
             })    
         save_oauth_session(user, backend.name, data)
-        return HttpResponse("Login successfully! Your email is '{0} &lt;{1}&gt;' ".format(data["display_name"],data["email"]) )
+        
+        return HttpResponse("Login successfully! Your email is '{0} &lt;{1}&gt;'  ".format(data["display_name"],data["email"]) )
     else:
         return HttpResponse("Invalid email account {0}, Please login to {1} ".format(data["email"], user.email))
 

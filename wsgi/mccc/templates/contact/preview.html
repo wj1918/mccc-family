@@ -1,0 +1,39 @@
+{% extends "site_base.html" %}
+
+{% block head_title %}Sent Invitation Email {% endblock %}
+{% block extra_head %}
+{% if not backend %}
+    <meta http-equiv="refresh" content="5">
+{% endif %}
+{% endblock %}
+
+{% block topbar_base %}
+{% endblock %}
+
+{% block body_base %}
+    <section class="jumbotron">
+        <div class="container">
+            <h2 class="text-center"> Sent Invitation Email  </h2>
+                <p> {{backend}}</p>
+                {% if backend %}
+                    <p>
+                    Email will send from your account "{{user.first_name}} {{user.last_name}} &lt;{{ user.email }} &gt;"
+                    </p>
+                    <form>
+                        <input type="hidden" name="ids" value= "{{ ids }}">
+                        <button type="submit" class="btn btn-default">Sent</button>
+                    </form>     
+                {% else %}
+                <div> 
+                    <p>
+                    <a href="{% url 'oauthemail:begin' 'gmail-oauth2' %}" target="_blank" > Login to your gmail account </a>
+                    <p>
+                    <a href="{% url 'oauthemail:begin' 'hotmail-oauth2' %}" target="_blank" > Login to your hotmail account </a>
+                </div>
+                after login, come back to this window.
+                {% endif %}
+        </div>
+
+    </section>
+{% endblock %}
+

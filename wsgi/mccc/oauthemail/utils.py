@@ -13,6 +13,7 @@ from social.exceptions import MissingBackend
 from social.strategies.utils import get_strategy
 from social.backends.utils import get_backend
 from .models import EmailSession
+from requests.exceptions import HTTPError 
 
 """
 OAUTHEMAIL_BACKENDS = [
@@ -101,52 +102,26 @@ def save_oauth_session(user, backend_name, data):
     es.port=data.get("port")
     es.save()
 
-def send_email(user):
-    es=EmailSession.objects.get(user=user)
-    auth_string=GenerateOAuth2String(user.email,es.access_token,base64_encode=False)
-    TestSmtpAuthentication(user.email,auth_string)
-    
-    return auth_string
-
 def get_user_auth_info(user):
     es=EmailSession.objects.get(user=user)
     auth_string = 'user=%s\1auth=Bearer %s\1\1' % (user.email, es.access_token)
     return {'auth_string':auth_string, "host": es.host, "port":es.port } 
 
-def GenerateOAuth2String(username, access_token, base64_encode=True):
-  """Generates an IMAP OAuth2 authentication string.
-
-  See https://developers.google.com/google-apps/gmail/oauth2_overview
-
-  Args:
-    username: the username (email address) of the account to authenticate
-    access_token: An OAuth2 access token.
-    base64_encode: Whether to base64-encode the output.
-
-  Returns:
-    The SASL argument for the OAuth2 mechanism.
-  """
-  auth_string = 'user=%s\1auth=Bearer %s\1\1' % (username, access_token)
-  if base64_encode:
-    auth_string = base64.b64encode(auth_string)
-  return auth_string
-
-
-
-def TestSmtpAuthentication(user, auth_string):
-  """Authenticates to SMTP with the given auth_string.
-  Args:
-    user: The Gmail username (full email address)
-    auth_string: A valid OAuth2 string, not base64-encoded, as returned by
-        GenerateOAuth2String.
-  """
-  smtp_conn = smtplib.SMTP('smtp.gmail.com', 587)
-  smtp_conn.set_debuglevel(True)
-  smtp_conn.ehlo('test')
-  smtp_conn.starttls()
-  smtp_conn.docmd('AUTH', 'XOAUTH2 ' + base64.b64encode(auth_string))
-  
-  msg = "YOUR Test MESSAGE!"
-  smtp_conn.sendmail(user, "wj1918@hotmail.com", msg)
-  smtp_conn.quit()
-
+def get_user_auth_backend(request):
+    user=request.user
+    es=EmailSession.objects.filter(user=user).first()
+    if not es:
+        return False
+    uri = reverse("oauthemail:complete", args=(es.backend_name,))
+    social_strategy = load_strategy(request)
+    backend = load_backend(social_strategy, es.backend_name, uri)
+    access_token=es.access_token
+    try:
+        backend.do_auth(access_token)
+        data =backend.data 
+        if user.email != data.get("email"):
+            return False
+        else:
+            return data
+    except HTTPError as err:
+        return err

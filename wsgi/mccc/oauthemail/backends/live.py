@@ -19,8 +19,8 @@ class HotmailOAuth2(LiveOAuth2):
         #return response;
         self.data.update( {
             'email': response["emails"]["account"], 
-            'display_name': response["name"], 
-            'token_type': response["token_type"],
-            'access_token': response["access_token"],
+            'display_name': response.get("name"), 
+            'token_type': response.get("token_type"),
+            'access_token': response.get("access_token"),
         })
         

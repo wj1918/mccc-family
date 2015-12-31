@@ -18,8 +18,8 @@ class GmailOAuth2(GoogleOAuth2):
 
         self.data.update( {
             'email': response["emails"][0]["value"], 
-            'display_name': response["displayName"], 
-            'token_type': response["token_type"],
-            'access_token': response["access_token"],
+            'display_name': response.get("displayName"), 
+            'token_type': response.get("token_type"),
+            'access_token': response.get("access_token"),
         })
         
