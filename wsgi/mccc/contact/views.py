@@ -9,7 +9,7 @@ from .utils import get_email_content
 from django.http import HttpResponse
 
 class ContactView(FormView):
-    template_name = 'contact/contact.html'
+    template_name = 'contact/update.html'
     form_class = ContactForm
     success_url = '/thanks/'
 
@@ -20,7 +20,7 @@ class ContactView(FormView):
         return super(ContactView, self).form_valid(form)
 
 class PublicContactView(FormView):
-    template_name = 'contact/contact.html'
+    template_name = 'contact/update.html'
     form_class = ContactForm
     success_url = '/thanks/'
 

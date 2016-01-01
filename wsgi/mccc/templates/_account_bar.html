@@ -6,7 +6,7 @@
     {% if request.user.is_authenticated %}
         <p class="navbar-text">
             {% if  request.user.userprofile and request.user.userprofile.person.family %}
-                <a href="{% url 'profile:change_family' %}" title="Change Family Information"><i class="fa fa-user"></i> {% user_display request.user %}</a>
+                <a href="{% url 'myfamily:update' %}" title="Change Family Information"><i class="fa fa-user"></i> {% user_display request.user %}</a>
             {% else %}
                 <i class="fa fa-user"></i> {% user_display request.user %}
             {% endif %}

@@ -33,16 +33,17 @@ admin.site.register(User, CustomUserAdmin)
 
 #The raw_id_fields widget shows a magnifying glass button next to the field which allows users to search for and select a value
 class ProfilePersonAdminPicker(admin.ModelAdmin):
-    list_display = ('id','last','first','chinese','sex','email', 'cphone','role','birthday',)
+    list_display = ('id','last','first','chinese','email', 'cphone','birthday',)
     search_fields = ['last','first','chinese','email', 'cphone',]
 
 admin.site.register(ProfilePerson, ProfilePersonAdminPicker)
 
 class ProfilePersonInline(admin.StackedInline):
-    exclude =['role',]
+    exclude =('last','first','chinese',) # why not working 
     model = ProfilePerson
     extra = 0
-    
+    def get_readonly_fields(self, request, obj=None):    
+        return ["last","first","chinese","email",]
     def has_add_permission(self, request):
         return False
 
@@ -77,7 +78,7 @@ class ProfileFamilyAdmin(admin.ModelAdmin):
 
         my_urls=[
             url(r'^jsi18n/$', wrap(self.i18n_javascript, cacheable=True), name='jsi18n'),
-            url(r'^update/$', wrap(self.change_view), name='change_family'),
+            url(r'^$', wrap(self.change_view), name='update'),
         ]
         return my_urls
 
@@ -134,5 +135,5 @@ class ProfileSite(AdminSite):
     def login(self, request, extra_context=None):
         return redirect('%s?next=%s' % (reverse('home'), request.REQUEST.get('next', '')))
 
-profile_site = ProfileSite(name="profile")
+profile_site = ProfileSite(name="myfamily")
 profile_site.register(ProfileFamily, ProfileFamilyAdmin)
