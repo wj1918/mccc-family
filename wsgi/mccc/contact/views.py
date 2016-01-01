@@ -1,3 +1,4 @@
+from django.core import mail
 from django.views.generic.edit import FormView
 from .forms import ContactForm
 from django.views.generic import TemplateView
@@ -5,6 +6,7 @@ from oauthemail.utils import get_user_auth_backend
 from django.utils.html import escape
 from .models import UpdateInvite
 from .utils import get_email_content
+from django.http import HttpResponse
 
 class ContactView(FormView):
     template_name = 'contact/contact.html'
@@ -41,9 +43,21 @@ class EmailPreviewView(TemplateView):
         email_content=get_email_content(ui,self.request)
         
         context['ids'] = self.request.session.get("ids",[])
+        context['email_list'] = self.request.session.get("email_list",[])
         context['backend'] = backend
         context['user'] = self.request.user
         context['update_invite'] = ui
         context['email_content'] = email_content
         return context    
+        
+    def post(self, request, *args, **kwargs):
+        idsstr=request.POST.get("ids","")
+        ids=idsstr.split(",")
+        connection= mail.get_connection("oauthemail.smtp.OauthEmailBackend", user=request.user)
+        for id in ids:
+            ui=UpdateInvite.objects.get(id=id);
+            email_content=get_email_content(ui,request)
+            mail.EmailMessage('Church Directroy', email_content, to=[ui.invite_email], connection=connection).send()
+        return HttpResponse("Email sent to {0} recipients.".format(len(ids)))
+    # return render(request, self.template_name)        
     

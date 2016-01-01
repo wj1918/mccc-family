@@ -13,16 +13,16 @@
 {% block body_base %}
     <section class="jumbotron">
         <div class="container">
-            <h2 class="text-center"> Sent Invitation Email  </h2>
+            <h2 class="text-center"> Invitation Email  </h2>
                 {% if backend %}
                     <p>
-                    Email will send from your account "{{user.first_name}} {{user.last_name}} &lt;{{ user.email }} &gt;"
-                    </p>
-                    This is a sample email:
+                    Email will send from your account "{{user.first_name}} {{user.last_name}} &lt;{{ user.email }} &gt;" 
+                    to </p>{{email_list}}
+                    <p>
                     <pre>
                         {{email_content}}
                     </pre>
-                    <form>
+                    <form  method="post"> {% csrf_token %}
                         <input type="hidden" name="ids" value= "{{ ids }}">
                         <button type="submit" class="btn btn-default">Sent</button>
                     </form>     

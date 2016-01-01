@@ -12,11 +12,13 @@ class UpdateInviteAdmin(admin.ModelAdmin):
     ordering = ['last_nm1']
 
     def send_invite_email(self, request, queryset):
-        vallist=queryset.values_list('id', flat=True)
-        first_id=vallist.first()
-        ids=",".join( str( val ) for val in vallist )
+        idvallist=queryset.values_list('id', flat=True)
+        first_id=idvallist.first()
+        ids=",".join( str( val ) for val in idvallist )
         request.session["ids"]=ids
         request.session["first_id"]=first_id
+        emailvallist=queryset.values_list('invite_email', flat=True)
+        request.session["email_list"]=";".join(emailvallist)
         #return TemplateResponse(request, 'contact/preview.html', {"ids":ids})
         return HttpResponseRedirect(reverse("contact:preview"))
         # return HttpResponseRedirect("/contact/preview/")
