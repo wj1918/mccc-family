@@ -124,4 +124,4 @@ def get_user_auth_backend(request):
         else:
             return data
     except HTTPError as err:
-        return err
+        return False

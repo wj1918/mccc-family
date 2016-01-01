@@ -13,8 +13,10 @@ class UpdateInviteAdmin(admin.ModelAdmin):
 
     def send_invite_email(self, request, queryset):
         vallist=queryset.values_list('id', flat=True)
+        first_id=vallist.first()
         ids=",".join( str( val ) for val in vallist )
         request.session["ids"]=ids
+        request.session["first_id"]=first_id
         #return TemplateResponse(request, 'contact/preview.html', {"ids":ids})
         return HttpResponseRedirect(reverse("contact:preview"))
         # return HttpResponseRedirect("/contact/preview/")

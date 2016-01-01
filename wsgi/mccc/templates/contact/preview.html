@@ -14,11 +14,14 @@
     <section class="jumbotron">
         <div class="container">
             <h2 class="text-center"> Sent Invitation Email  </h2>
-                <p> {{backend}}</p>
                 {% if backend %}
                     <p>
                     Email will send from your account "{{user.first_name}} {{user.last_name}} &lt;{{ user.email }} &gt;"
                     </p>
+                    This is a sample email:
+                    <pre>
+                        {{email_content}}
+                    </pre>
                     <form>
                         <input type="hidden" name="ids" value= "{{ ids }}">
                         <button type="submit" class="btn btn-default">Sent</button>

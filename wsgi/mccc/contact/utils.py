@@ -10,6 +10,9 @@ from contact.models import UpdateInvite
 from .tokens import access_token_generator
 from profile.models import UserProfile
 from django.core.mail import send_mail
+from htmltemplate.models import HtmlTemplate
+from django.template import engines
+
 
 logger = logging.getLogger("django")
 #printout()
@@ -45,7 +48,7 @@ def create_update_invite(queryset):
 
         if(p1 and p1.email):
             m.invite_person=p1
-            m.invite_email=p1.email
+            m.invite_email="{0} {1} <{2}>".format(p1.first,p1.last,p1.email)
             m.email1=p1.email
             m.cell_phone1=p1.cphone
             m.is_member=p1.member=="Y"
@@ -68,7 +71,7 @@ def create_update_invite(queryset):
 
         if(p2 and p2.email):
             m.invite_person=p2
-            m.invite_email=p2.email
+            m.invite_email="{0} {1} <{2}>".format(p2.first,p2.last,p2.email)
             m.email2=p2.email
             m.cell_phone2=p2.cphone
             m.is_member=p2.member=="Y"
@@ -90,3 +93,11 @@ def send_email(queryset):
     for o in queryset:
         send_mail('Your Email subject', 'Your Email message.', settings.EMAIL_HOST_USER, [o.invite_email], fail_silently=False)
         
+def get_email_content(update_invite,request):
+    ht=HtmlTemplate.objects.get(name="INVITE_EMAIL").content;
+    django_engine = engines['django']
+    template = django_engine.from_string(ht)
+    context={}
+    context.update(update_invite.__dict__)
+    context.update({"request":request})
+    return template.render(context)
