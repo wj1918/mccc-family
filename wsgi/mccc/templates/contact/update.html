@@ -8,33 +8,86 @@
 {% block body_base %}
     <section class="jumbotron">
         <div class="container">
-            <h2 class="text-center"> Family Contact</h2>
+            <h2 class="text-center"> Update Family Contact Information</h2>
 
                 {{ form.non_field_errors }}
                 
-                <div class="fieldWrapper">
-                    {{ form.home_address.errors }}
-                    <label for="{{ form.home_address.id_for_label }}">Home Address:</label>
-                    {{ form.home_address }}
-                </div>
 
-                <div class="fieldWrapper">
-                    {{ form.home_phone.errors }}
-                    <label for="{{ form.home_phone.id_for_label }}">Home Phone:</label>
-                    {{ form.home_phone }}
-                </div>
+<form class="form-horizontal">
+  <div class="form-group">
+    {{ form.address.errors }}
+    <label for="{{ form.address.id_for_label }}" class="col-sm-2 control-label">Address:</label>
+    <div class="col-sm-10">
+      <input id="id_address" maxlength="200" name="address" type="text" class="form-control"  placeholder="Address">
+    </div>
+  </div>
+  <div class="form-group">
+    {{ form.city.errors }}
+    <label for="{{ form.city.id_for_label }}" class="col-sm-2 control-label">City:</label>
+    <div class="col-sm-10">
+      <input id="id_city" maxlength="200" name="city" type="text" class="form-control"  placeholder="City">
+    </div>
+  </div>
 
-                <div class="fieldWrapper">
-                    {{ form.cell_phone1.errors }}
-                    <label for="{{ form.cell_phone1.id_for_label }}">Cell Phone 1:</label>
-                    {{ form.home_phone }}
-                </div>
+  <div class="form-group">
+    {{ form.state.errors }}
+    <label for="{{ form.state.id_for_label }}" class="col-sm-2 control-label">State:</label>
+    <div class="col-sm-10">
+      <input id="id_state" maxlength="200" name="state" type="text" class="form-control"  placeholder="State">
+    </div>
+  </div>
 
-                <div class="fieldWrapper">
-                    {{ form.cell_phone2.errors }}
-                    <label for="{{ form.cell_phone2.id_for_label }}">Cell Phone 2:</label>
-                    {{ form.home_phone }}
-                </div>
+  <div class="form-group">
+    {{ form.zip.errors }}
+    <label for="{{ form.zip.id_for_label }}" class="col-sm-2 control-label">Zip:</label>
+    <div class="col-sm-10">
+      <input id="id_zip" maxlength="200" name="zip" type="text" class="form-control"  placeholder="Zip">
+    </div>
+  </div>
+
+  <div class="form-group">
+    {{ form.home_phone.errors }}
+    <label for="{{ form.home_phone.id_for_label }}" class="col-sm-2 control-label">Home Phone:</label>
+    <div class="col-sm-10">
+      <input id="id_home_phone" maxlength="200" name="home_phone" type="text" class="form-control"  placeholder="Home Phone">
+    </div>
+  </div>
+
+  <div class="form-group">
+    {{ form.cell_phone_1.errors }}
+    <label for="{{ form.cell_phone_1.id_for_label }}" class="col-sm-2 control-label">Zip:</label>
+    <div class="col-sm-10">
+      <input id="id_cell_phone_1" maxlength="200" name="cell_phone_1" type="text" class="form-control"  placeholder="Cell Phone 1">
+    </div>
+  </div>
+
+
+  <div class="form-group">
+    {{ form.cell_phone_2.errors }}
+    <label for="{{ form.cell_phone_2.id_for_label }}" class="col-sm-2 control-label">Zip:</label>
+    <div class="col-sm-10">
+      <input id="id_cell_phone_2" maxlength="200" name="cell_phone_2" type="text" class="form-control"  placeholder="Cell Phone 2">
+    </div>
+  </div>
+
+<!--
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox"> Remember me
+        </label>
+      </div>
+    </div>
+  </div>
+  -->
+  
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-default">Submit</button>
+    </div>
+  </div>
+</form>                
 
         </div>
     </section>
