@@ -29,8 +29,9 @@ def create_update_invite(queryset):
     count=0    
     for o in queryset:
         m=UpdateInvite()
-        m.family=Family.objects.get(id=o.family_id)
-        m.address=o.address
+        family=Family.objects.get(id=o.family_id)
+        m.family=family
+        m.full_address=o.address
         m.home_phone=o.home_phone
         m.last_nm1=o.last_nm
         m.first_nm1=o.first_nm
@@ -39,7 +40,11 @@ def create_update_invite(queryset):
         m.first_nm2=o.wf_first
         m.chinese_nm2=o.wf_chinese_nm
         m.dir_type=UpdateInvite.COUPLE if ( o.wf_first or o.wf_chinese_nm)  else UpdateInvite.SINGLE
-
+        m.address=family.address
+        m.city=family.city
+        m.state=family.state
+        m.zip=family.zip
+        
         p1=None
         if(o.first_nm and o.last_nm):
             p1=Person.objects.get(family__id=o.family_id, first=o.first_nm, last=o.last_nm)
