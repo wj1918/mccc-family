@@ -46,43 +46,29 @@ def create_update_invite(queryset):
         elif (o.chinese_nm):
             p1=Person.objects.get(family__id=o.family_id, chinese=o.chinese_nm)
 
-        if(p1 and p1.email):
-            m.invite_person=p1
-            m.invite_email="{0} {1} <{2}>".format(p1.first,p1.last,p1.email)
-            m.email1=p1.email
+        if(p1):
+            m.person1=p1
+            m.email1="{0} {1} <{2}>".format(p1.first,p1.last,p1.email) if p1.email else None
             m.cell_phone1=p1.cphone
-            m.is_member=p1.member=="Y"
-            if login_exists(p1):
-                m.invite_state=UpdateInvite.LOGIN_EXISTS
-            else:    
-                m.invite_state=UpdateInvite.ACTIVE
-                token = access_token_generator.make_token() 
-                m.access_token=token
-                m.expiration_date=datetime.date.today()+ datetime.timedelta(days=settings.ACCESS_TOKEN_EXPIRATION_DAYS)
-            
-            m.save()
-            count+=1
-            
+            m.invite_state1=UpdateInvite.LOGIN_EXISTS if login_exists(p1) else UpdateInvite.ACTIVE
+
         p2=None    
         if(o.wf_first):
             p2=Person.objects.get(family__id=o.family_id, first=o.wf_first)
         elif (o.wf_chinese_nm):
             p2=Person.objects.get(family__id=o.family_id, chinese=o.wf_chinese_nm)
 
-        if(p2 and p2.email):
-            m.invite_person=p2
-            m.invite_email="{0} {1} <{2}>".format(p2.first,p2.last,p2.email)
-            m.email2=p2.email
+        if(p2):
+            m.person2=p2
+            m.email2="{0} {1} <{2}>".format(p2.first,p2.last,p2.email) if p2.email else None
             m.cell_phone2=p2.cphone
-            m.is_member=p2.member=="Y"
-            if login_exists(p2):
-                m.invite_state=UpdateInvite.LOGIN_EXISTS
-            else:    
-                m.invite_state=UpdateInvite.ACTIVE
-                token = access_token_generator.make_token() 
-                m.access_token=token
-                m.expiration_date=datetime.date.today()+ datetime.timedelta(days=settings.ACCESS_TOKEN_EXPIRATION_DAYS)
-            m.pk=None
+            m.invite_state2=UpdateInvite.LOGIN_EXISTS if login_exists(p2) else UpdateInvite.ACTIVE
+
+        if(m.email1 or m.email2):
+            m.invite_email=';'.join([x for x in (m.email1,m.email2) if x])
+            token = access_token_generator.make_token() 
+            m.access_token=token
+            m.expiration_date=datetime.date.today()+ datetime.timedelta(days=settings.ACCESS_TOKEN_EXPIRATION_DAYS)
             m.save()
             count+=1
 

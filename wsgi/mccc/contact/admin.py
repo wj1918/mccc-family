@@ -6,9 +6,9 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
 class UpdateInviteAdmin(admin.ModelAdmin):
-    list_display = ('id','update_family','invite_state','invite_person','is_member','invite_email',"dir_type", 'access_token','expiration_date', 'address','home_phone','worship','last_nm1','first_nm1', 'chinese_nm1', 'cell_phone1', 'first_nm2', 'chinese_nm2', 'cell_phone2','creation_date','comment',)
-    list_filter = ['invite_state','worship','dir_type','is_member',]
-    search_fields = ('access_token','address','home_phone','last_nm1','invite_email','first_nm1', 'chinese_nm1', 'cell_phone1', 'first_nm2', 'chinese_nm2', 'cell_phone2',)
+    list_display = ('id','update_family','dir_type','invite_email', 'access_token','expiration_date', 'address','home_phone','worship','person1','invite_state1','last_nm1','first_nm1', 'chinese_nm1', 'cell_phone1','email1','person2','invite_state2', 'first_nm2', 'chinese_nm2', 'cell_phone2','email2','creation_date','comment',)
+    list_filter = ['worship','dir_type',]
+    search_fields = ('access_token','address','home_phone','last_nm1','first_nm1', 'chinese_nm1', 'cell_phone1','email1', 'first_nm2', 'chinese_nm2', 'cell_phone2','email2',)
     ordering = ['last_nm1']
 
     def send_invite_email(self, request, queryset):
