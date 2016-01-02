@@ -45,17 +45,18 @@ class UpdateInvite(models.Model):
     cell_phone1 = models.CharField( max_length=40, blank=True, null=True, verbose_name="NM1_Cell")
     email1 = models.CharField( max_length=100, null=True)
 
-    person2 = models.ForeignKey( Person, null=True, related_name="person2")
+    person2 = models.ForeignKey( Person, null=True,blank=True, related_name="person2")
     first_nm2 = models.CharField( max_length=40, blank=True, null=True, verbose_name="NM2_E")
     chinese_nm2 = models.CharField( max_length=20, blank=True, null=True, verbose_name="NM2_C")
     cell_phone2 = models.CharField( max_length=40, blank=True, null=True, verbose_name="NM2_Cell")
-    email2 = models.CharField( max_length=100, null=True)
+    email2 = models.CharField( max_length=100, null=True,blank=True,)
     
     creation_date = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True,null=True)
     expiration_date = models.DateTimeField(null=True)
 
-    comment = models.CharField( max_length=400, null=True)
+    comment =  models.TextField(null=True,)
+
     
     class Meta:
         db_table = 'MCCC_Update_Invite'

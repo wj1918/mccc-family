@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
 class UpdateInviteAdmin(admin.ModelAdmin):
-    list_display = ('id','dir_type','invite_email','invite_state', 'access_token','expiration_date','full_address', 'address','city','state','zip','home_phone','worship','person1','last_nm1','first_nm1', 'chinese_nm1', 'cell_phone1','email1','person2', 'first_nm2', 'chinese_nm2', 'cell_phone2','email2','creation_date','comment',)
+    list_display = ('id','dir_type','invite_email','invite_state', 'access_token','expiration_date','full_address', 'address','city','state','zip','home_phone','worship','person1','last_nm1','first_nm1', 'chinese_nm1', 'cell_phone1','email1','person2', 'first_nm2', 'chinese_nm2', 'cell_phone2','email2','creation_date',)
     list_filter = ['worship','dir_type','invite_state',]
     search_fields = ('access_token','address','home_phone','last_nm1','first_nm1', 'chinese_nm1', 'cell_phone1','email1', 'first_nm2', 'chinese_nm2', 'cell_phone2','email2',)
     ordering = ['last_nm1']
