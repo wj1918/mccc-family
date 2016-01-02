@@ -8,24 +8,25 @@
 {% block body_base %}
     <section class="jumbotron">
         <div class="container">
-            <h2 class="text-center"> Update Family Contact Information</h2>
-
+            <h2 class="text-center"> Family Contact Information</h2>
+            
                 {{ form.non_field_errors }}
                 
 
 <form class="form-horizontal">
+
   <div class="form-group">
     {{ form.address.errors }}
     <label for="{{ form.address.id_for_label }}" class="col-sm-2 control-label">Address:</label>
     <div class="col-sm-10">
-      <input id="id_address" maxlength="200" name="address" type="text" class="form-control"  placeholder="Address">
+      {{ form.address }}
     </div>
   </div>
   <div class="form-group">
     {{ form.city.errors }}
     <label for="{{ form.city.id_for_label }}" class="col-sm-2 control-label">City:</label>
     <div class="col-sm-10">
-      <input id="id_city" maxlength="200" name="city" type="text" class="form-control"  placeholder="City">
+      {{ form.city }}
     </div>
   </div>
 
@@ -33,7 +34,7 @@
     {{ form.state.errors }}
     <label for="{{ form.state.id_for_label }}" class="col-sm-2 control-label">State:</label>
     <div class="col-sm-10">
-      <input id="id_state" maxlength="200" name="state" type="text" class="form-control"  placeholder="State">
+      {{ form.state }}
     </div>
   </div>
 
@@ -41,7 +42,7 @@
     {{ form.zip.errors }}
     <label for="{{ form.zip.id_for_label }}" class="col-sm-2 control-label">Zip:</label>
     <div class="col-sm-10">
-      <input id="id_zip" maxlength="200" name="zip" type="text" class="form-control"  placeholder="Zip">
+      {{ form.zip }}
     </div>
   </div>
 
@@ -49,26 +50,95 @@
     {{ form.home_phone.errors }}
     <label for="{{ form.home_phone.id_for_label }}" class="col-sm-2 control-label">Home Phone:</label>
     <div class="col-sm-10">
-      <input id="id_home_phone" maxlength="200" name="home_phone" type="text" class="form-control"  placeholder="Home Phone">
+      {{ form.home_phone }}
+    </div>
+  </div>
+{% if dir_type == "C" %}
+
+  <div class="form-group">
+    {{ form.last_nm1.errors }}
+    <label for="{{ form.last_nm1.id_for_label }}" class="col-sm-2 control-label">Last Name:</label>
+    <div class="col-sm-10">
+      {{ form.last_nm1 }}
+    </div>
+  </div>
+  <div class="form-group">
+    {{ form.first_nm1.errors }}
+    <label for="{{ form.first_nm1.id_for_label }}" class="col-sm-2 control-label">Husband First Name:</label>
+    <div class="col-sm-10">
+      {{ form.first_nm1 }}
+    </div>
+  </div>
+  <div class="form-group">
+    {{ form.chinese_nm1.errors }}
+    <label for="{{ form.chinese_nm1.id_for_label }}" class="col-sm-2 control-label">Husband Chinese Name:</label>
+    <div class="col-sm-10">
+      {{ form.chinese_nm1 }}
     </div>
   </div>
 
   <div class="form-group">
-    {{ form.cell_phone_1.errors }}
-    <label for="{{ form.cell_phone_1.id_for_label }}" class="col-sm-2 control-label">Zip:</label>
+    {{ form.cell_phone1.errors }}
+    <label for="{{ form.cell_phone1.id_for_label }}" class="col-sm-2 control-label">Husband Cell Phone:</label>
     <div class="col-sm-10">
-      <input id="id_cell_phone_1" maxlength="200" name="cell_phone_1" type="text" class="form-control"  placeholder="Cell Phone 1">
+      {{ form.cell_phone1 }}
     </div>
   </div>
-
+  <div class="form-group">
+    {{ form.first_nm2.errors }}
+    <label for="{{ form.first_nm2.id_for_label }}" class="col-sm-2 control-label">Wife First Name:</label>
+    <div class="col-sm-10">
+      {{ form.first_nm2}}
+    </div>
+  </div>
+  <div class="form-group">
+    {{ form.chinese_nm2.errors }}
+    <label for="{{ form.chinese_nm2.id_for_label }}" class="col-sm-2 control-label">Wife Chinese Name:</label>
+    <div class="col-sm-10">
+      {{ form.chinese_nm2}}
+    </div>
+  </div>
 
   <div class="form-group">
     {{ form.cell_phone_2.errors }}
-    <label for="{{ form.cell_phone_2.id_for_label }}" class="col-sm-2 control-label">Zip:</label>
+    <label for="{{ form.cell_phone_2.id_for_label }}" class="col-sm-2 control-label">Wife Cell Phone:</label>
     <div class="col-sm-10">
-      <input id="id_cell_phone_2" maxlength="200" name="cell_phone_2" type="text" class="form-control"  placeholder="Cell Phone 2">
+      {{ form.cell_phone2}}
     </div>
   </div>
+
+{% else %}
+  <div class="form-group">
+    {{ form.last_nm1.errors }}
+    <label for="{{ form.last_nm1.id_for_label }}" class="col-sm-2 control-label">Last Name:</label>
+    <div class="col-sm-10">
+      {{ form.last_nm1 }}
+    </div>
+  </div>
+  <div class="form-group">
+    {{ form.first_nm1.errors }}
+    <label for="{{ form.first_nm1.id_for_label }}" class="col-sm-2 control-label">First Name:</label>
+    <div class="col-sm-10">
+      {{ form.first_nm1 }}
+    </div>
+  </div>
+  <div class="form-group">
+    {{ form.chinese_nm1.errors }}
+    <label for="{{ form.chinese_nm1.id_for_label }}" class="col-sm-2 control-label">Chinese Name:</label>
+    <div class="col-sm-10">
+      {{ form.chinese_nm1 }}
+    </div>
+  </div>
+
+  <div class="form-group">
+    {{ form.cell_phone1.errors }}
+    <label for="{{ form.cell_phone1.id_for_label }}" class="col-sm-2 control-label">Cell Phone:</label>
+    <div class="col-sm-10">
+      {{ form.cell_phone1 }}
+    </div>
+  </div>
+
+{% endif %}
 
 <!--
   <div class="form-group">

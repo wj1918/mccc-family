@@ -29,7 +29,7 @@ def create_update_invite(queryset):
     count=0    
     for o in queryset:
         m=UpdateInvite()
-        m.update_family=Family.objects.get(id=o.family_id)
+        m.family=Family.objects.get(id=o.family_id)
         m.address=o.address
         m.home_phone=o.home_phone
         m.last_nm1=o.last_nm
@@ -50,7 +50,6 @@ def create_update_invite(queryset):
             m.person1=p1
             m.email1="{0} {1} <{2}>".format(p1.first,p1.last,p1.email) if p1.email else None
             m.cell_phone1=p1.cphone
-            m.invite_state1=UpdateInvite.LOGIN_EXISTS if login_exists(p1) else UpdateInvite.ACTIVE
 
         p2=None    
         if(o.wf_first):
@@ -62,7 +61,6 @@ def create_update_invite(queryset):
             m.person2=p2
             m.email2="{0} {1} <{2}>".format(p2.first,p2.last,p2.email) if p2.email else None
             m.cell_phone2=p2.cphone
-            m.invite_state2=UpdateInvite.LOGIN_EXISTS if login_exists(p2) else UpdateInvite.ACTIVE
 
         if(m.email1 or m.email2):
             m.invite_email=';'.join([x for x in (m.email1,m.email2) if x])

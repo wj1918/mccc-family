@@ -6,7 +6,11 @@ from oauthemail.utils import get_user_auth_backend
 from django.utils.html import escape
 from .models import UpdateInvite
 from .utils import get_email_content
-from django.http import HttpResponse
+from django.http import (
+    Http404, HttpResponse,
+)
+from django.shortcuts import get_object_or_404
+from .tokens import access_token_generator
 
 class ContactView(FormView):
     template_name = 'contact/update.html'
@@ -29,6 +33,33 @@ class PublicContactView(FormView):
         # It should return an HttpResponse.
         #form.send_email()
         return super(PublicContactView, self).form_valid(form)
+        
+    def get_initial(self):
+        """
+        Returns the initial data to use for forms on this view.
+        """
+        initial = super(PublicContactView, self).get_initial()
+    
+        token=self.kwargs.get("token")
+        update_invite = get_object_or_404(UpdateInvite, access_token=token)
+        initial['address']=update_invite.family.address
+        initial['city']=update_invite.family.city
+        initial['state']=update_invite.family.state
+        initial['zip']=update_invite.family.zip
+        initial.update(update_invite.__dict__)
+    
+        return initial
+        
+    def get_context_data(self, **kwargs):
+            context = super(PublicContactView, self).get_context_data(**kwargs)
+            token=self.kwargs.get("token")
+            """check token expiration date"""
+            if not access_token_generator.check_token(token):
+                raise Http404()    
+            update_invite = get_object_or_404(UpdateInvite, access_token=token)
+            context.update(update_invite.__dict__)
+            context.update({"request":self.request})
+            return context
 
 class EmailPreviewView(TemplateView):
     template_name = "contact/preview.html"
@@ -58,6 +89,6 @@ class EmailPreviewView(TemplateView):
             ui=UpdateInvite.objects.get(id=id);
             email_content=get_email_content(ui,request)
             mail.EmailMessage('Church Directroy', email_content, to=[ui.invite_email], connection=connection).send()
-        return HttpResponse("Email sent to {0} recipients.".format(len(ids)))
+        return HttpResponse("{0} email sent.".format(len(ids)))
     # return render(request, self.template_name)        
     
