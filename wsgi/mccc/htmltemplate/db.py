@@ -15,8 +15,8 @@ class Loader(BaseLoader):
         tried = []
         try:
             tpl = HtmlTemplate.objects.get(name=template_name)
-            return tpl.content, template_name
-        except IOError:
+            return tpl.content, "db:{0}".format(template_name)
+        except HtmlTemplate.DoesNotExist:
             tried.append(template_name)
         if tried:
             error_msg = "Tried %s" % tried

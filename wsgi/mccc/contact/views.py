@@ -17,21 +17,9 @@ from django.shortcuts import render
 from django.views.generic import View
 from django.core.urlresolvers import reverse
 
-class ContactView(FormView):
-    template_name = 'contact/update.html'
-    form_class = ContactForm
-    success_url = '/thanks/'
-
-    def form_valid(self, form):
-        # This method is called when valid form data has been POSTed.
-        # It should return an HttpResponse.
-        #form.send_email()
-        return super(ContactView, self).form_valid(form)
-
 class ContactUpdateView(FormView):
-    template_name = 'contact/update.html'
+    template_name = 'DIRECTORY_UPDATE_FORM'
     form_class = ContactForm
-    success_url = '/thanks/'
 
     def form_valid(self, form):
         # This method is called when valid form data has been POSTed.
@@ -117,7 +105,7 @@ class SignupConfirmView(View):
         update_invite=self.validate_token(token)
         context={"num_email":update_invite.invite_email.count(";")+1}
         context.update(update_invite.__dict__)
-        return render(request, 'contact/signup.html',context)
+        return render(request, 'SIGNUP_PAGE',context)
 
     def post(self, request, *args, **kwargs):
         token=self.kwargs.get("token")
