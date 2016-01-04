@@ -186,7 +186,17 @@ def create_user_profile(person):
     cursor.execute("insert into user_profile(person_id,user_id) value (%s,%s)", [person.id,u.id])    
 
 def signup_by_email(update_invite):
+    count=0
     if update_invite.person1 and not login_exists(update_invite.person1) and update_invite.person1.email:
         create_user_profile(update_invite.person1)
+        count+=1
     if update_invite.person2 and not login_exists(update_invite.person2) and update_invite.person2.email:
         create_user_profile(update_invite.person2)
+        count+=1
+    return count
+    
+def create_logins(queryset):
+    count=0    
+    for update_invite in queryset:
+        count+=signup_by_email(update_invite)
+    return count

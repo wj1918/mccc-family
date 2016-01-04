@@ -4,6 +4,8 @@ from .utils import send_email
 from django.template.response import TemplateResponse
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from .utils import create_logins
+from django.contrib.admin import helpers
 
 class UpdateInviteAdmin(admin.ModelAdmin):
     list_display = ('id','dir_type','invite_email','invite_state', 'access_token','expiration_date','full_address', 'address','city','state','zip','home_phone','worship','person1','last_nm1','first_nm1', 'chinese_nm1', 'cell_phone1','email1','fellowship_nm1','person2', 'first_nm2', 'chinese_nm2', 'cell_phone2','email2','fellowship_nm2','creation_date',)
@@ -18,9 +20,29 @@ class UpdateInviteAdmin(admin.ModelAdmin):
         request.session["ids"]=ids_str
         request.session["first_id"]=first_id
         return HttpResponseRedirect(reverse("contact:preview"))
-
     send_invite_email.short_description = "Send invite email"
 
-    actions = [send_invite_email,]
+
+    def create_logins(self, request, queryset):
+        if request.POST.get('post'):
+            # process the queryset here
+            rows_updated = create_logins(queryset)
+            if rows_updated == 1:
+                message_bit = "1 login user was"
+            else:
+                message_bit = "%s login users were" % rows_updated
+            self.message_user(request, "%s successfully created." % message_bit)
+        else:
+            context = {
+                'title': "Are you sure?",
+                'queryset': queryset,
+                'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME,                
+            }
+            return TemplateResponse(request, 'contact/create_login_preview.html',context)
+#            return TemplateResponse(request, "admin/delete_selected_confirmation.html" ,context)
+          
+    create_logins.short_description = "Create Logins"
+
+    actions = [send_invite_email,create_logins,]
     
 admin.site.register(UpdateInvite,UpdateInviteAdmin)

@@ -61,6 +61,8 @@ class UpdateInvite(models.Model):
 
     comment =  models.TextField(null=True,blank=True,)
 
+    def __unicode__(self):    
+        return self.invite_email
     
     class Meta:
         db_table = 'MCCC_Update_Invite'

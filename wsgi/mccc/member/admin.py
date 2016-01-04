@@ -153,7 +153,7 @@ class McccDirAdmin(admin.ModelAdmin):
         if rows_updated == 1:
             message_bit = "1 update invite was"
         else:
-            message_bit = "%s stories were" % rows_updated
+            message_bit = "%s invite were" % rows_updated
         self.message_user(request, "%s successfully created." % message_bit)
     create_invite.short_description = "Create update invite"
 
