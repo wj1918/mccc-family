@@ -46,6 +46,6 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User)
     person =models.OneToOneField(ProfilePerson)
     def __unicode__(self):
-        return self.user.username
+        return u'{0}'.format(self.user.username)
     class Meta:
         db_table = 'user_profile'

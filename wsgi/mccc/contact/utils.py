@@ -4,6 +4,7 @@ import string
 import datetime
 from logging_tree import printout
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 from family.models import Family
 from family.models import Person
 from contact.models import UpdateInvite
@@ -12,10 +13,9 @@ from profile.models import UserProfile
 from django.core.mail import send_mail
 from htmltemplate.models import HtmlTemplate
 from django.template import engines
+from django.contrib.auth.models import (User, Group,)
+from django.db import connection
 
-
-logger = logging.getLogger("django")
-#printout()
 
 def login_exists(person):
     return UserProfile.objects.filter(person__id=person.id,user__is_active=True,user__is_staff=True).count()>0
@@ -90,3 +90,74 @@ def get_email_content(update_invite,request):
     context.update(update_invite.__dict__)
     context.update({"request":request})
     return template.render(context)
+    
+    
+def save_contact(token, form):
+        update_invite = get_object_or_404(UpdateInvite, access_token=token)
+        changed=False
+        f=Family.objects.get(id=update_invite.family.id)
+        changed=False
+        changed_value={}
+        if f.address != form.cleaned_data['address']:
+            changed=True
+            f.address= form.cleaned_data['address']
+            changed_value["address"]=form.cleaned_data['address']
+        if f.city != form.cleaned_data['city']:
+            changed=True
+            f.city= form.cleaned_data['city']
+            changed_value["city"]=f.city
+        if f.state != form.cleaned_data['state']: 
+            changed=True
+            f.state= form.cleaned_data['state']
+            changed_value["state"]=f.state
+        if f.zip != form.cleaned_data['zip']:
+            changed=True
+            f.zip= form.cleaned_data['zip']
+            changed_value["zip"]=f.zip
+        if f.home1 != form.cleaned_data['home_phone']: 
+            changed=True
+            f.home1= form.cleaned_data['home_phone']
+            changed_value["home_phone"]=f.home1
+        if changed:    
+            f.save()
+            
+        if update_invite.person1:    
+            p1=Person.objects.get(id=update_invite.person1.id)
+            if p1 and p1.cphone != form.cleaned_data['cell_phone1']:
+                    p1.cphone = form.cleaned_data['cell_phone1']
+                    changed_value["cell_phone1"]=p1.cphone
+                    p1.save()
+            
+        if update_invite.person2:    
+            p2=Person.objects.get(id=update_invite.person2.id)
+            if p2 and p2.cphone != form.cleaned_data['cell_phone2']:
+                    p2.cphone = form.cleaned_data['cell_phone2']
+                    changed_value["cell_phone2"]=p2.cphone
+                    p2.save()
+        
+        update_invite.comment=repr({"changed":changed_value, "cleaned_data":form.cleaned_data})       
+        update_invite.invite_state=UpdateInvite.SUBMITTED
+        update_invite.save()
+
+def create_user_profile(person):
+    
+    u=User(username=person.email.split("@")[0],
+        first_name=person.first,
+        last_name=person.last,
+        email=person.email,
+        is_staff=True,
+        is_active=True,)
+    u.save()
+        
+    g = Group.objects.get(name='MCCC Member') 
+    g.user_set.add(u)
+    g.save()
+    
+    cursor = connection.cursor()
+    cursor.execute("insert into user_profile(person_id,user_id) value (%s,%s)", [person.id,u.id])    
+
+def signup_by_email(update_invite):
+    if update_invite.person1 and not login_exists(update_invite.person1) and update_invite.person1.email:
+        create_user_profile(update_invite.person1)
+    if update_invite.person2 and not login_exists(update_invite.person2) and update_invite.person2.email:
+        create_user_profile(update_invite.person2)

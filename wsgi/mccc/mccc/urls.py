@@ -12,7 +12,8 @@ from library.admin import library_site
 from profile.admin import profile_site
 from children.urls import urlpatterns as children_urlpatterns
 from views import database;
-from contact.views import PublicContactView
+from contact.views import ContactUpdateView
+from contact.views import SignupConfirmView
 
 urlpatterns = patterns('',
     # Examples:
@@ -34,7 +35,10 @@ urlpatterns = patterns('',
     url(r'^autocomplete/', include('autocomplete_light.urls')),
     url(r'^contact/', include('contact.urls', namespace="contact")),
     url(r'^oauthemail/', include('oauthemail.urls', namespace="oauthemail")),
-    url(r'^t/(?P<token>[^/]+)$', PublicContactView.as_view(), name='public_contact'),
+    url(r'^t/(?P<token>[^/]+)$', ContactUpdateView.as_view(), name='update_contact'),
+    url(r'^s/(?P<token>[^/]+)$', SignupConfirmView.as_view(), name='signup_confirm'),
+    
+    
     
 )
 

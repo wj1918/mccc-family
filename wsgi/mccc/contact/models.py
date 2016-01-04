@@ -43,7 +43,7 @@ class UpdateInvite(models.Model):
     first_nm1 = models.CharField( max_length=40, blank=True, null=True, verbose_name="NM1_E")
     chinese_nm1 = models.CharField( max_length=20, blank=True, null=True, verbose_name="NM1_C")
     cell_phone1 = models.CharField( max_length=40, blank=True, null=True, verbose_name="NM1_Cell")
-    email1 = models.CharField( max_length=100, null=True)
+    email1 = models.CharField( max_length=100, null=True,blank=True,)
 
     person2 = models.ForeignKey( Person, null=True,blank=True, related_name="person2")
     first_nm2 = models.CharField( max_length=40, blank=True, null=True, verbose_name="NM2_E")
@@ -55,7 +55,7 @@ class UpdateInvite(models.Model):
     last_modified = models.DateTimeField(auto_now=True,null=True)
     expiration_date = models.DateTimeField(null=True)
 
-    comment =  models.TextField(null=True,)
+    comment =  models.TextField(null=True,blank=True,)
 
     
     class Meta:
