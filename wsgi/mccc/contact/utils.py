@@ -24,8 +24,6 @@ def random_string():
     return ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(10))    
 
 def create_update_invite(queryset):
-    logger.info("in create_update_invite.")
-    
     count=0    
     for o in queryset:
         m=UpdateInvite()
@@ -55,6 +53,7 @@ def create_update_invite(queryset):
             m.person1=p1
             m.email1="{0} {1} <{2}>".format(p1.first,p1.last,p1.email) if p1.email else None
             m.cell_phone1=p1.cphone
+            m.fellowship_nm1=p1.fellowship
 
         p2=None    
         if(o.wf_first):
@@ -66,6 +65,7 @@ def create_update_invite(queryset):
             m.person2=p2
             m.email2="{0} {1} <{2}>".format(p2.first,p2.last,p2.email) if p2.email else None
             m.cell_phone2=p2.cphone
+            m.fellowship_nm2=p2.fellowship
 
         if(m.email1 or m.email2):
             m.invite_email=';'.join([x for x in (m.email1,m.email2) if x])

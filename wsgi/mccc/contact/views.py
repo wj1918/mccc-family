@@ -16,6 +16,7 @@ from django.conf import settings
 from django.shortcuts import render
 from django.views.generic import View
 from django.core.urlresolvers import reverse
+from smtplib import SMTPException
 
 class ContactUpdateView(FormView):
     template_name = 'DIRECTORY_UPDATE_FORM'
@@ -70,15 +71,25 @@ class EmailPreviewView(TemplateView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(EmailPreviewView, self).get_context_data(**kwargs)
-        ids=self.request.session.get("ids",[])
+        ids_str=self.request.session.get("ids",[])
         first_id=self.request.session.get("first_id")
         ui=UpdateInvite.objects.get(id=first_id);
         
         backend =get_user_auth_backend(self.request)
         email_content=get_email_content(ui,self.request)
         
-        context['ids'] = self.request.session.get("ids",[])
-        context['email_list'] = self.request.session.get("email_list",[])
+        ids=ids_str.split(",")
+        new_ids=[]
+        email_list=[]
+        for id in ids:
+            ui=UpdateInvite.objects.get(id=id);
+            if ui.invite_state==UpdateInvite.ACTIVE:
+                new_ids.append(id)
+                email_list.append(ui.invite_email)
+
+        context['ids'] = ",".join(new_ids)
+        context['num_family'] = len(new_ids)
+        context['email_list'] = ",".join(email_list)
         context['backend'] = backend
         context['user'] = self.request.user
         context['update_invite'] = ui
@@ -89,15 +100,20 @@ class EmailPreviewView(TemplateView):
         idsstr=request.POST.get("ids","")
         ids=idsstr.split(",")
         connection= mail.get_connection("oauthemail.smtp.OauthEmailBackend", user=request.user)
+        count=0
         for id in ids:
             ui=UpdateInvite.objects.get(id=id);
             if ui.invite_state==UpdateInvite.ACTIVE:
                 email_content=get_email_content(ui,request)
                 to_email= request.user.email if settings.DEBUG else ui.invite_email
-                mail.EmailMessage('Church Directroy', email_content, to=[to_email], connection=connection).send()
+                try:
+                    mail.EmailMessage('Church Directroy', email_content, to=[to_email], connection=connection).send()
+                except SMTPException as e:
+                    return HttpResponse("{0} email sent. stopped with error {1}".format(count,e))
                 ui.invite_state=UpdateInvite.SENT
                 ui.save()
-        return HttpResponse("{0} email sent.".format(len(ids)))
+                count+=1
+        return HttpResponse("{0} email sent.".format(count))
 
 class SignupConfirmView(View):
     def get(self, request, *args, **kwargs):
