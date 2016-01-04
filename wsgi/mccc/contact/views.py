@@ -11,6 +11,7 @@ from .models import UpdateInvite
 from .utils import get_email_content
 from .utils import save_contact
 from .utils import signup_by_email
+from .utils import parse_email
 from family.models import (Family,Person,)
 from django.conf import settings
 from django.shortcuts import render
@@ -105,9 +106,14 @@ class EmailPreviewView(TemplateView):
             ui=UpdateInvite.objects.get(id=id);
             if ui.invite_state==UpdateInvite.ACTIVE:
                 email_content=get_email_content(ui,request)
-                to_email= request.user.email if settings.DEBUG else ui.invite_email
+                subject,to,cc,bcc,content=parse_email(email_content)
+                to_email= to if to else ui.invite_email
                 try:
-                    result=mail.EmailMessage('Church Directroy', email_content, to=[to_email], connection=connection).send()
+                    result=mail.EmailMessage(subject, content, to=[to_email], 
+                        cc=[cc]if cc else [], 
+                        bcc=[bcc]if bcc else [], 
+                        connection=connection).send()
+                        
                     ui.invite_state=UpdateInvite.SENT
                     ui.comment=repr(result)
                     ui.save()

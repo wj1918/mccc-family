@@ -90,8 +90,37 @@ def get_email_content(update_invite,request):
     context.update(update_invite.__dict__)
     context.update({"request":request})
     return template.render(context)
-    
-    
+
+def parse_email(email):
+    lines =email.splitlines(True)
+    subject=None
+    to=None
+    cc=None
+    bcc=None
+    content=None
+    begin_content=False
+    for line in lines:
+        if not begin_content:
+            if line.startswith('SUBJECT:'):
+                subject=line[8:].strip()
+                begin_content=False
+            elif line.startswith('TO:'):
+                to=line[3:].strip()
+                begin_content=False
+            elif line.startswith('CC:'):
+                cc=line[3:].strip()
+                begin_content=False
+            elif line.startswith('BCC:'):
+                bcc=line[4:].strip()
+                begin_content=False
+            elif line.strip()=="":
+                begin_content=False
+            else:
+                begin_content=True
+        if begin_content:
+            content= content+ line if content else line
+    return subject,to,cc,bcc,content
+
 def save_contact(token, form):
         update_invite = get_object_or_404(UpdateInvite, access_token=token)
         changed=False
