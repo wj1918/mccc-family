@@ -116,6 +116,7 @@ http {
         add_header Strict-Transport-Security max-age=691200;
 
         location / {
+            uwsgi_read_timeout 300;
             uwsgi_pass django;
             include uwsgi_params;
         }
@@ -144,16 +145,6 @@ http {
             autoindex on;    
             alias ${OPENSHIFT_STATIC_ROOT};
         }        
-
-        location /account/ {
-            uwsgi_pass django;
-            include uwsgi_params;
-        }
-
-        location /admin/ {
-            uwsgi_pass django;
-            include uwsgi_params;
-        }
 
         location /phpMyAdmin/ {
             index index.php;

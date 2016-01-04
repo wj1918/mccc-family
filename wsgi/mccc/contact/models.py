@@ -10,12 +10,14 @@ class UpdateInvite(models.Model):
     EXPIRED = 'E'
     SENT ='L'
     SUBMITTED ='S'
+    FAILED ='F'
     INVITE_STATE = (
         (ACTIVE, 'Active'),
         (CANCELLED, 'Cancelled'),
         (EXPIRED, 'Expired'),
         (SENT, 'Sent'),
         (SUBMITTED, 'Submitted'),
+        (FAILED, 'Failed'),
     )
     
     COUPLE='C'

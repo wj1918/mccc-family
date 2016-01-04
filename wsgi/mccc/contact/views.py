@@ -107,12 +107,16 @@ class EmailPreviewView(TemplateView):
                 email_content=get_email_content(ui,request)
                 to_email= request.user.email if settings.DEBUG else ui.invite_email
                 try:
-                    mail.EmailMessage('Church Directroy', email_content, to=[to_email], connection=connection).send()
+                    result=mail.EmailMessage('Church Directroy', email_content, to=[to_email], connection=connection).send()
+                    ui.invite_state=UpdateInvite.SENT
+                    ui.comment=repr(result)
+                    ui.save()
+                    count+=1
                 except SMTPException as e:
-                    return HttpResponse("{0} email sent. stopped with error {1}".format(count,e))
-                ui.invite_state=UpdateInvite.SENT
-                ui.save()
-                count+=1
+                    ui.invite_state=UpdateInvite.FAILED
+                    ui.comment=repr(e)
+                    ui.save()
+                    return HttpResponse("stopped with error {0}".format(e))
         return HttpResponse("{0} email sent.".format(count))
 
 class SignupConfirmView(View):
