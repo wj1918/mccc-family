@@ -90,11 +90,11 @@ class EmailPreviewView(TemplateView):
 
         context['ids'] = ",".join(new_ids)
         context['num_family'] = len(new_ids)
-        context['email_list'] = ",".join(email_list)
+        context['email_list'] = email_list
         context['backend'] = backend
-        context['user'] = self.request.user
         context['update_invite'] = ui
         context['email_content'] = email_content
+        context['user'] = self.request.user
         return context    
         
     def post(self, request, *args, **kwargs):

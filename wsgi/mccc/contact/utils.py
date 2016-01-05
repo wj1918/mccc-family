@@ -15,7 +15,7 @@ from htmltemplate.models import HtmlTemplate
 from django.template import engines
 from django.contrib.auth.models import (User, Group,)
 from django.db import connection
-
+from django.conf import settings
 
 def login_exists(person):
     return UserProfile.objects.filter(person__id=person.id,user__is_active=True,user__is_staff=True).exists() or User.objects.filter(email__iexact=person.email).exists()
@@ -89,6 +89,8 @@ def get_email_content(update_invite,request):
     context={}
     context.update(update_invite.__dict__)
     context.update({"request":request})
+    context['user'] = request.user
+    context['debug'] = settings.DEBUG
     return template.render(context)
 
 def parse_email(email):

@@ -155,7 +155,7 @@ class McccDirAdmin(admin.ModelAdmin):
         else:
             message_bit = "%s invite were" % rows_updated
         self.message_user(request, "%s successfully created." % message_bit)
-    create_invite.short_description = "Create update invite"
+    create_invite.short_description = "Create directory update invitations."
 
     actions = [download_as_csv("Download selected objects as CSV file"), create_invite,]
     download_as_csv_fields=[
