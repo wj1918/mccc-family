@@ -1,6 +1,5 @@
 from django.contrib import admin
 from .models import UpdateInvite
-from .utils import send_email
 from django.template.response import TemplateResponse
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect

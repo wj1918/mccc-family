@@ -1,4 +1,5 @@
 from django.core import mail
+from smtplib import SMTPException
 from django.views.generic.edit import FormView
 from .forms import ContactForm
 from django.views.generic import TemplateView
@@ -12,12 +13,12 @@ from .utils import get_email_content
 from .utils import save_contact
 from .utils import parse_email
 from .utils import signup
+from .utils import send_emails
 from family.models import (Family,Person,)
 from django.conf import settings
 from django.shortcuts import render
 from django.views.generic import View
 from django.core.urlresolvers import reverse
-from smtplib import SMTPException
 
 class ContactUpdateView(FormView):
     template_name = 'DIRECTORY_UPDATE_FORM'
@@ -99,32 +100,8 @@ class EmailPreviewView(TemplateView):
         
     def post(self, request, *args, **kwargs):
         idsstr=request.POST.get("ids","")
-        ids=idsstr.split(",")
-        connection= mail.get_connection("oauthemail.smtp.OauthEmailBackend", user=request.user)
-        count=0
-        for id in ids:
-            ui=UpdateInvite.objects.get(id=id);
-            if ui.invite_state==UpdateInvite.ACTIVE:
-                email_content=get_email_content(ui,request)
-                subject,to,cc,bcc,content=parse_email(email_content)
-                to_email= to if to else ui.invite_email
-                try:
-                    result=mail.EmailMessage(subject, content, to=[to_email], 
-                        cc=[cc]if cc else [], 
-                        bcc=[bcc]if bcc else [], 
-                        connection=connection).send()
-                        
-                    ui.invite_state=UpdateInvite.SENT
-                    ui.comment=repr(result)
-                    ui.save()
-                    count+=1
-                except SMTPException as e:
-                    ui.invite_state=UpdateInvite.FAILED
-                    ui.comment=repr(e)
-                    ui.save()
-                    return HttpResponse("stopped with error {0}".format(e))
-        return HttpResponse("{0} email sent.".format(count))
-
+        return send_emails(idsstr,request)
+        
 class SignupConfirmView(View):
     
     def get(self, request, *args, **kwargs):

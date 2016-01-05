@@ -16,6 +16,9 @@ from django.template import engines
 from django.contrib.auth.models import (User, Group,)
 from django.db import connection
 from django.conf import settings
+from django.core import mail
+from smtplib import SMTPException
+from django.http import (Http404, HttpResponse, HttpResponseRedirect,)
 
 def get_login_user(person):
     user=None
@@ -88,9 +91,35 @@ def create_update_invite(queryset):
     return count
 
 
-def send_email(queryset):
-    for o in queryset:
-        send_mail('Your Email subject', 'Your Email message.', settings.EMAIL_HOST_USER, [o.invite_email], fail_silently=False)
+def send_emails(idsstr,request):
+    ids=idsstr.split(",")
+    connection= mail.get_connection("oauthemail.smtp.OauthEmailBackend", user=request.user)
+    connection.open()
+    count=0
+    for id in ids:
+        ui=UpdateInvite.objects.get(id=id);
+        if ui.invite_state==UpdateInvite.ACTIVE:
+            email_content=get_email_content(ui,request)
+            subject,to,cc,bcc,content=parse_email(email_content)
+            to_email= to if to else ui.invite_email
+            try:
+                result=mail.EmailMessage(subject, content, to=[to_email], 
+                    cc=[cc]if cc else [], 
+                    bcc=[bcc]if bcc else [], 
+                    connection=connection).send()
+                    
+                ui.invite_state=UpdateInvite.SENT
+                ui.comment=repr(result)
+                ui.save()
+                count+=1
+            except SMTPException as e:
+                ui.invite_state=UpdateInvite.FAILED
+                ui.comment=repr(e)
+                ui.save()
+                connection.close()
+                return HttpResponse("stopped with error {0}".format(e))
+    connection.close()
+    return HttpResponse("{0} email sent.".format(count))
         
 def get_email_content(update_invite,request):
     ht=HtmlTemplate.objects.get(name="WELCOME_EMAIL").content
