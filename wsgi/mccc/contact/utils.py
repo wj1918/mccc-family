@@ -18,7 +18,7 @@ from django.db import connection
 
 
 def login_exists(person):
-    return UserProfile.objects.filter(person__id=person.id,user__is_active=True,user__is_staff=True).count()>0
+    return UserProfile.objects.filter(person__id=person.id,user__is_active=True,user__is_staff=True).exists() or User.objects.filter(email__iexact=person.email).exists()
 
 def random_string():
     return ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(10))    
@@ -170,7 +170,7 @@ def save_contact(token, form):
 
 def create_user_profile(person):
     
-    u=User(username=person.email.split("@")[0],
+    u=User(username="{0}.{1}".format(person.last.lower(),person.first.lower()),
         first_name=person.first,
         last_name=person.last,
         email=person.email,
