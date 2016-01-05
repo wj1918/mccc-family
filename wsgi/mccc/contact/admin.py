@@ -6,12 +6,23 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from .utils import create_logins
 from django.contrib.admin import helpers
+from profile.models import UserProfile
+from django.db.models import Q
 
 class UpdateInviteAdmin(admin.ModelAdmin):
-    list_display = ('id','dir_type','invite_email','invite_state', 'access_token','expiration_date','full_address', 'address','city','state','zip','home_phone','worship','person1','last_nm1','first_nm1', 'chinese_nm1', 'cell_phone1','email1','fellowship_nm1','person2', 'first_nm2', 'chinese_nm2', 'cell_phone2','email2','fellowship_nm2','creation_date',)
+    list_display = ('id','dir_type','invite_email','get_has_login','invite_state', 'access_token','expiration_date','full_address', 'address','city','state','zip','home_phone','worship','person1','last_nm1','first_nm1', 'chinese_nm1', 'cell_phone1','email1','fellowship_nm1','person2', 'first_nm2', 'chinese_nm2', 'cell_phone2','email2','fellowship_nm2','creation_date',)
     list_filter = ['worship','dir_type','invite_state','fellowship_nm1',]
     search_fields = ('access_token','address','home_phone','last_nm1','first_nm1', 'chinese_nm1', 'cell_phone1','email1', 'first_nm2', 'chinese_nm2', 'cell_phone2','email2',)
     ordering = ['last_nm1']
+
+    def get_has_login(self, obj):
+        if obj.person1 and UserProfile.objects.filter(person__id=obj.person1.id).exists():
+            return True
+        if obj.person2 and UserProfile.objects.filter(person__id=obj.person2.id).exists():
+            return True
+        return False
+        
+    get_has_login.short_description = 'Has Login'
 
     def send_invite_email(self, request, queryset):
         idvallist=queryset.values_list('id', flat=True)
