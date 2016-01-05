@@ -10,8 +10,8 @@ from .tokens import access_token_generator
 from .models import UpdateInvite
 from .utils import get_email_content
 from .utils import save_contact
-from .utils import signup_by_email
 from .utils import parse_email
+from .utils import signup
 from family.models import (Family,Person,)
 from django.conf import settings
 from django.shortcuts import render
@@ -126,6 +126,7 @@ class EmailPreviewView(TemplateView):
         return HttpResponse("{0} email sent.".format(count))
 
 class SignupConfirmView(View):
+    
     def get(self, request, *args, **kwargs):
         token=self.kwargs.get("token")
         update_invite=self.validate_token(token)
@@ -136,7 +137,7 @@ class SignupConfirmView(View):
     def post(self, request, *args, **kwargs):
         token=self.kwargs.get("token")
         update_invite=self.validate_token(token)
-        signup_by_email(update_invite)
+        signup(update_invite)
         url="/member/member/mcccdir/"
         return HttpResponseRedirect(url)
 

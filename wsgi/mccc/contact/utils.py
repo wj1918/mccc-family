@@ -17,9 +17,17 @@ from django.contrib.auth.models import (User, Group,)
 from django.db import connection
 from django.conf import settings
 
-def login_exists(person):
-    return UserProfile.objects.filter(person__id=person.id,user__is_active=True,user__is_staff=True).exists() or User.objects.filter(email__iexact=person.email).exists()
-
+def get_login_user(person):
+    user=None
+    ups=UserProfile.objects.filter(person__id=person.id)
+    if ups.exists():
+        user=ups.first().user
+    else:
+        u=User.objects.filter(email__iexact=person.email)
+        if u.exists():
+            user=u.first()
+    return user
+    
 def random_string():
     return ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(10))    
 
@@ -54,6 +62,7 @@ def create_update_invite(queryset):
             m.email1="{0} {1} <{2}>".format(p1.first,p1.last,p1.email) if p1.email else None
             m.cell_phone1=p1.cphone
             m.fellowship_nm1=p1.fellowship
+            m.login_user_nm1=get_login_user(p1)
 
         p2=None    
         if(o.wf_first):
@@ -66,6 +75,7 @@ def create_update_invite(queryset):
             m.email2="{0} {1} <{2}>".format(p2.first,p2.last,p2.email) if p2.email else None
             m.cell_phone2=p2.cphone
             m.fellowship_nm2=p2.fellowship
+            m.login_user_nm2=get_login_user(p2)
 
         if(m.email1 or m.email2):
             m.invite_email=';'.join([x for x in (m.email1,m.email2) if x])
@@ -170,8 +180,21 @@ def save_contact(token, form):
         update_invite.invite_state=UpdateInvite.SUBMITTED
         update_invite.save()
 
-def create_user_profile(person):
-    
+def signup(update_invite):
+    count=0
+    if update_invite.person1 and not get_login_user(update_invite.person1) and update_invite.person1.email:
+        u=create_user(update_invite.person1)
+        update_invite.login_user_nm1=u
+        update_invite.save()
+        count+=1
+    if update_invite.person2 and not get_login_user(update_invite.person2) and update_invite.person2.email:
+        u=create_user(update_invite.person2)
+        update_invite.login_user_nm2=u
+        update_invite.save()
+        count+=1
+    return count
+
+def create_user(person):
     u=User(username="{0}.{1}".format(person.last.lower(),person.first.lower()),
         first_name=person.first,
         last_name=person.last,
@@ -186,19 +209,11 @@ def create_user_profile(person):
     
     cursor = connection.cursor()
     cursor.execute("insert into user_profile(person_id,user_id) value (%s,%s)", [person.id,u.id])    
-
-def signup_by_email(update_invite):
-    count=0
-    if update_invite.person1 and not login_exists(update_invite.person1) and update_invite.person1.email:
-        create_user_profile(update_invite.person1)
-        count+=1
-    if update_invite.person2 and not login_exists(update_invite.person2) and update_invite.person2.email:
-        create_user_profile(update_invite.person2)
-        count+=1
-    return count
+    
+    return u
     
 def create_logins(queryset):
     count=0    
     for update_invite in queryset:
-        count+=signup_by_email(update_invite)
+        count+=signup(update_invite)
     return count

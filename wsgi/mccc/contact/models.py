@@ -2,6 +2,7 @@ from django.db import models
 from family.models import Person
 from family.models import Family
 from member.models import McccDir
+from django.contrib.auth.models import (User, Group,)
 
 class UpdateInvite(models.Model):
     
@@ -41,6 +42,7 @@ class UpdateInvite(models.Model):
     zip = models.CharField( max_length=100, null=True)
 
     person1 = models.ForeignKey( Person, null=True, related_name="person1")
+    login_user_nm1 = models.ForeignKey( User, null=True, related_name="invite1s")
     last_nm1 = models.CharField(max_length=30, blank=True, null=True, verbose_name="Last_NM")
     first_nm1 = models.CharField( max_length=40, blank=True, null=True, verbose_name="NM1_E")
     chinese_nm1 = models.CharField( max_length=20, blank=True, null=True, verbose_name="NM1_C")
@@ -49,6 +51,7 @@ class UpdateInvite(models.Model):
     fellowship_nm1 = models.CharField( max_length=50, blank=True, null=True,)
 
     person2 = models.ForeignKey( Person, null=True,blank=True, related_name="person2")
+    login_user_nm2 = models.ForeignKey( User, null=True, related_name="invite2s")
     first_nm2 = models.CharField( max_length=40, blank=True, null=True, verbose_name="NM2_E")
     chinese_nm2 = models.CharField( max_length=20, blank=True, null=True, verbose_name="NM2_C")
     cell_phone2 = models.CharField( max_length=40, blank=True, null=True, verbose_name="NM2_Cell")

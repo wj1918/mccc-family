@@ -1,6 +1,6 @@
 {% extends "site_base.html" %}
 
-{% block head_title %}Sent Invitation Email {% endblock %}
+{% block head_title %}Sent Welcome Emails {% endblock %}
 {% block extra_head %}
 {% if not backend %}
     <meta http-equiv="refresh" content="5">
@@ -13,7 +13,7 @@
 {% block body_base %}
     <section class="jumbotron">
         <div class="container">
-            <h2 class="text-center"> Invitation Email  </h2>
+            <h2 class="text-center"> Sent Welcome Emails  </h2>
                 {% if backend %}
                     Email will send to {{num_family}} family using your account "{{user.first_name}} {{user.last_name}} &lt;{{ user.email }} &gt;".
                     <ul>{{ email_list|unordered_list }}</ul>
