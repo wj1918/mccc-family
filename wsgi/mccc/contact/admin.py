@@ -31,7 +31,7 @@ class UpdateInviteAdmin(admin.ModelAdmin):
         request.session["ids"]=ids_str
         request.session["first_id"]=first_id
         return HttpResponseRedirect(reverse("contact:preview"))
-    send_invite_email.short_description = "Send invite email"
+    send_invite_email.short_description = "Send Welcome Emails"
 
 
     def create_logins(self, request, queryset):

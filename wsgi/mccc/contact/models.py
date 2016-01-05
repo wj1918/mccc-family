@@ -66,5 +66,5 @@ class UpdateInvite(models.Model):
     
     class Meta:
         db_table = 'MCCC_Update_Invite'
-        verbose_name_plural = 'Directory Update Invitations'
-        verbose_name ='Directory Update UpdateInvite'
+        verbose_name_plural = 'Directory Updates'
+        verbose_name ='Directory Update'

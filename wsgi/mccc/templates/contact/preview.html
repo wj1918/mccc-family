@@ -15,8 +15,7 @@
         <div class="container">
             <h2 class="text-center"> Invitation Email  </h2>
                 {% if backend %}
-                    Email will send from your account "{{user.first_name}} {{user.last_name}} &lt;{{ user.email }} &gt;" 
-                    to {{num_family}} family.
+                    Email will send to {{num_family}} family using your account "{{user.first_name}} {{user.last_name}} &lt;{{ user.email }} &gt;".
                     <ul>{{ email_list|unordered_list }}</ul>
                     <p>
                     Following is an email example    

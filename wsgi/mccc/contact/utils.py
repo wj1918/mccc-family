@@ -83,7 +83,7 @@ def send_email(queryset):
         send_mail('Your Email subject', 'Your Email message.', settings.EMAIL_HOST_USER, [o.invite_email], fail_silently=False)
         
 def get_email_content(update_invite,request):
-    ht=HtmlTemplate.objects.get(name="INVITE_EMAIL").content
+    ht=HtmlTemplate.objects.get(name="WELCOME_EMAIL").content
     django_engine = engines['django']
     template = django_engine.from_string(ht)
     context={}
