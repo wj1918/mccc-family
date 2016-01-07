@@ -8,7 +8,7 @@ from django.utils.html import escape
 from django.http import (Http404, HttpResponse, HttpResponseRedirect,)
 from django.shortcuts import get_object_or_404
 from .tokens import access_token_generator
-from .models import UpdateInvite
+from .models import DirUpdate
 from .utils import get_email_content
 from .utils import save_contact
 from .utils import parse_email
@@ -37,8 +37,8 @@ class ContactUpdateView(FormView):
         initial = super(ContactUpdateView, self).get_initial()
     
         token=self.kwargs.get("token")
-        update_invite = get_object_or_404(UpdateInvite, access_token=token)
-        initial.update(update_invite.__dict__)
+        dir_update = get_object_or_404(DirUpdate, access_token=token)
+        initial.update(dir_update.__dict__)
     
         return initial
     
@@ -54,19 +54,19 @@ class ContactUpdateView(FormView):
             context = super(ContactUpdateView, self).get_context_data(**kwargs)
             token=self.kwargs.get("token")
             """check token expiration date"""
-            update_invite=self.validate_token(token)
-            context.update(update_invite.__dict__)
+            dir_update=self.validate_token(token)
+            context.update(dir_update.__dict__)
             context.update({"request":self.request})
             return context
 
     def validate_token(self,token):
             if not access_token_generator.check_token(token):
                 raise Http404()    
-            update_invite = get_object_or_404(UpdateInvite, access_token=token)
-            if update_invite.invite_state!= UpdateInvite.SENT:
+            dir_update = get_object_or_404(DirUpdate, access_token=token)
+            if dir_update.invite_state!= DirUpdate.SENT:
                 raise Http404()  
                 
-            return update_invite
+            return dir_update
 
 class EmailPreviewView(TemplateView):
     template_name = "contact/preview.html"
@@ -75,7 +75,7 @@ class EmailPreviewView(TemplateView):
         context = super(EmailPreviewView, self).get_context_data(**kwargs)
         ids_str=self.request.session.get("ids",[])
         first_id=self.request.session.get("first_id")
-        ui=UpdateInvite.objects.get(id=first_id);
+        ui=DirUpdate.objects.get(id=first_id);
         
         backend =get_user_auth_backend(self.request)
         email_content=get_email_content(ui,self.request)
@@ -84,8 +84,8 @@ class EmailPreviewView(TemplateView):
         new_ids=[]
         email_list=[]
         for id in ids:
-            ui=UpdateInvite.objects.get(id=id);
-            if ui.invite_state==UpdateInvite.ACTIVE:
+            ui=DirUpdate.objects.get(id=id);
+            if ui.invite_state==DirUpdate.ACTIVE:
                 new_ids.append(id)
                 email_list.append(ui.invite_email)
 
@@ -93,7 +93,7 @@ class EmailPreviewView(TemplateView):
         context['num_family'] = len(new_ids)
         context['email_list'] = email_list
         context['backend'] = backend
-        context['update_invite'] = ui
+        context['dir_update'] = ui
         context['email_content'] = email_content
         context['user'] = self.request.user
         return context    
@@ -106,22 +106,22 @@ class SignupConfirmView(View):
     
     def get(self, request, *args, **kwargs):
         token=self.kwargs.get("token")
-        update_invite=self.validate_token(token)
-        context={"num_email":update_invite.invite_email.count(";")+1}
-        context.update(update_invite.__dict__)
+        dir_update=self.validate_token(token)
+        context={"num_email":dir_update.invite_email.count(";")+1}
+        context.update(dir_update.__dict__)
         return render(request, 'SIGNUP_PAGE',context)
 
     def post(self, request, *args, **kwargs):
         token=self.kwargs.get("token")
-        update_invite=self.validate_token(token)
-        signup(update_invite)
+        dir_update=self.validate_token(token)
+        signup(dir_update)
         url="/member/member/mcccdir/"
         return HttpResponseRedirect(url)
 
     def validate_token(self,token):
             if not access_token_generator.check_token(token):
                 raise Http404()    
-            update_invite = get_object_or_404(UpdateInvite, access_token=token)
-            if not(update_invite.invite_state== UpdateInvite.SUBMITTED or  update_invite.invite_state== UpdateInvite.SENT):
+            dir_update = get_object_or_404(DirUpdate, access_token=token)
+            if not(dir_update.invite_state== DirUpdate.SUBMITTED or  dir_update.invite_state== DirUpdate.SENT):
                 raise Http404()  
-            return update_invite
+            return dir_update

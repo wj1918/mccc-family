@@ -7,7 +7,7 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404
 from family.models import Family
 from family.models import Person
-from contact.models import UpdateInvite
+from contact.models import DirUpdate
 from .tokens import access_token_generator
 from profile.models import UserProfile
 from django.core.mail import send_mail
@@ -34,10 +34,10 @@ def get_login_user(person):
 def random_string():
     return ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(10))    
 
-def create_update_invite(queryset):
+def create_dir_update(queryset):
     count=0    
     for o in queryset:
-        m=UpdateInvite()
+        m=DirUpdate()
         family=Family.objects.get(id=o.family_id)
         m.family=family
         m.full_address=o.address
@@ -48,7 +48,7 @@ def create_update_invite(queryset):
         m.worship=o.worship
         m.first_nm2=o.wf_first
         m.chinese_nm2=o.wf_chinese_nm
-        m.dir_type=UpdateInvite.COUPLE if ( o.wf_first or o.wf_chinese_nm)  else UpdateInvite.SINGLE
+        m.dir_type=DirUpdate.COUPLE if ( o.wf_first or o.wf_chinese_nm)  else DirUpdate.SINGLE
         m.address=family.address
         m.city=family.city
         m.state=family.state
@@ -97,8 +97,8 @@ def send_emails(idsstr,request):
     connection.open()
     count=0
     for id in ids:
-        ui=UpdateInvite.objects.get(id=id);
-        if ui.invite_state==UpdateInvite.ACTIVE:
+        ui=DirUpdate.objects.get(id=id);
+        if ui.invite_state==DirUpdate.ACTIVE:
             email_content=get_email_content(ui,request)
             subject,to,cc,bcc,content=parse_email(email_content)
             to_email= to if to else ui.invite_email
@@ -108,12 +108,12 @@ def send_emails(idsstr,request):
                     bcc=[bcc]if bcc else [], 
                     connection=connection).send()
                     
-                ui.invite_state=UpdateInvite.SENT
+                ui.invite_state=DirUpdate.SENT
                 ui.comment=repr(result)
                 ui.save()
                 count+=1
             except SMTPException as e:
-                ui.invite_state=UpdateInvite.FAILED
+                ui.invite_state=DirUpdate.FAILED
                 ui.comment=repr(e)
                 ui.save()
                 connection.close()
@@ -121,12 +121,12 @@ def send_emails(idsstr,request):
     connection.close()
     return HttpResponse("{0} email sent.".format(count))
         
-def get_email_content(update_invite,request):
+def get_email_content(dir_update,request):
     ht=HtmlTemplate.objects.get(name="WELCOME_EMAIL").content
     django_engine = engines['django']
     template = django_engine.from_string(ht)
     context={}
-    context.update(update_invite.__dict__)
+    context.update(dir_update.__dict__)
     context.update({"request":request})
     context['user'] = request.user
     context['debug'] = settings.DEBUG
@@ -163,9 +163,9 @@ def parse_email(email):
     return subject,to,cc,bcc,content
 
 def save_contact(token, form):
-        update_invite = get_object_or_404(UpdateInvite, access_token=token)
+        dir_update = get_object_or_404(DirUpdate, access_token=token)
         changed=False
-        f=Family.objects.get(id=update_invite.family.id)
+        f=Family.objects.get(id=dir_update.family.id)
         changed=False
         changed_value={}
         if f.address != form.cleaned_data['address']:
@@ -191,35 +191,35 @@ def save_contact(token, form):
         if changed:    
             f.save()
             
-        if update_invite.person1:    
-            p1=Person.objects.get(id=update_invite.person1.id)
+        if dir_update.person1:    
+            p1=Person.objects.get(id=dir_update.person1.id)
             if p1 and p1.cphone != form.cleaned_data['cell_phone1']:
                     p1.cphone = form.cleaned_data['cell_phone1']
                     changed_value["cell_phone1"]=p1.cphone
                     p1.save()
             
-        if update_invite.person2:    
-            p2=Person.objects.get(id=update_invite.person2.id)
+        if dir_update.person2:    
+            p2=Person.objects.get(id=dir_update.person2.id)
             if p2 and p2.cphone != form.cleaned_data['cell_phone2']:
                     p2.cphone = form.cleaned_data['cell_phone2']
                     changed_value["cell_phone2"]=p2.cphone
                     p2.save()
         
-        update_invite.comment=repr({"changed":changed_value, "cleaned_data":form.cleaned_data})       
-        update_invite.invite_state=UpdateInvite.SUBMITTED
-        update_invite.save()
+        dir_update.comment=repr({"changed":changed_value, "cleaned_data":form.cleaned_data})       
+        dir_update.invite_state=DirUpdate.SUBMITTED
+        dir_update.save()
 
-def signup(update_invite):
+def signup(dir_update):
     count=0
-    if update_invite.person1 and not get_login_user(update_invite.person1) and update_invite.person1.email:
-        u=create_user(update_invite.person1)
-        update_invite.login_user_nm1=u
-        update_invite.save()
+    if dir_update.person1 and not get_login_user(dir_update.person1) and dir_update.person1.email:
+        u=create_user(dir_update.person1)
+        dir_update.login_user_nm1=u
+        dir_update.save()
         count+=1
-    if update_invite.person2 and not get_login_user(update_invite.person2) and update_invite.person2.email:
-        u=create_user(update_invite.person2)
-        update_invite.login_user_nm2=u
-        update_invite.save()
+    if dir_update.person2 and not get_login_user(dir_update.person2) and dir_update.person2.email:
+        u=create_user(dir_update.person2)
+        dir_update.login_user_nm2=u
+        dir_update.save()
         count+=1
     return count
 
@@ -243,6 +243,6 @@ def create_user(person):
     
 def create_logins(queryset):
     count=0    
-    for update_invite in queryset:
-        count+=signup(update_invite)
+    for dir_update in queryset:
+        count+=signup(dir_update)
     return count

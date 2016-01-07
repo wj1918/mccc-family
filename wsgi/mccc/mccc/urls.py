@@ -48,9 +48,6 @@ urlpatterns += staticfiles_urlpatterns()
 admin.site.site_header = 'Administration'
 admin.site.site_title ='Site admin'
 
-member_site.site_header = 'Administration'
-member_site.site_title ='Site admin'
-
 children_site.site_header = 'Administration'
 children_site.site_title ='Site admin'
 

@@ -11,7 +11,7 @@ from django.contrib.admin import AdminSite
 from singledispatch import singledispatch  # pip install singledispatch
 
 from models import McccDir
-from contact.utils import create_update_invite
+from contact.utils import create_dir_update
 
 def prep_field(obj, field):
     """
@@ -149,13 +149,13 @@ class McccDirAdmin(admin.ModelAdmin):
         return False
 
     def create_invite(self, request, queryset):
-        rows_updated = create_update_invite(queryset)
+        rows_updated = create_dir_update(queryset)
         if rows_updated == 1:
             message_bit = "1 update invite was"
         else:
             message_bit = "%s invite were" % rows_updated
         self.message_user(request, "%s successfully created." % message_bit)
-    create_invite.short_description = "Create directory update invitations."
+    create_invite.short_description = "Create directory update."
 
     actions = [download_as_csv("Download selected objects as CSV file"), create_invite,]
     download_as_csv_fields=[
@@ -179,4 +179,6 @@ class McccDirAdmin(admin.ModelAdmin):
             return None
         
 member_site = MemberSite(name='member')
+member_site.site_header = 'MCCC Online Directory'
+member_site.site_title ='MCCC Online Directory'
 member_site.register(McccDir,McccDirAdmin)

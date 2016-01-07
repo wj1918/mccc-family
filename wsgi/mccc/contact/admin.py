@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UpdateInvite
+from .models import DirUpdate
 from django.template.response import TemplateResponse
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -26,7 +26,7 @@ class HasLoginListFilter(admin.SimpleListFilter):
         if self.value() == 'N':
             return queryset.filter(login_user_nm1__isnull=True)
                                     
-class UpdateInviteAdmin(admin.ModelAdmin):
+class DirUpdateAdmin(admin.ModelAdmin):
     list_display = ('id','dir_type','invite_email','invite_state','login_user_nm1','login_user_nm2','email1','email2', 'access_token','expiration_date','full_address', 'address','city','state','zip','home_phone','worship','person1','last_nm1','first_nm1', 'chinese_nm1', 'cell_phone1','fellowship_nm1','person2', 'first_nm2', 'chinese_nm2', 'cell_phone2','fellowship_nm2','creation_date','last_modified',)
     list_filter = ['invite_state',HasLoginListFilter,'dir_type','fellowship_nm1','worship',]
     search_fields = ('access_token','address','home_phone','last_nm1','first_nm1', 'chinese_nm1', 'cell_phone1','email1', 'first_nm2', 'chinese_nm2', 'cell_phone2','email2',)
@@ -64,4 +64,4 @@ class UpdateInviteAdmin(admin.ModelAdmin):
 
     actions = [send_invite_email,create_logins,]
     
-admin.site.register(UpdateInvite,UpdateInviteAdmin)
+admin.site.register(DirUpdate,DirUpdateAdmin)

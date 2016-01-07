@@ -4,7 +4,7 @@ from family.models import Family
 from member.models import McccDir
 from django.contrib.auth.models import (User, Group,)
 
-class UpdateInvite(models.Model):
+class DirUpdate(models.Model):
     
     ACTIVE = 'A'
     CANCELLED = 'C'
@@ -68,6 +68,6 @@ class UpdateInvite(models.Model):
         return self.invite_email
     
     class Meta:
-        db_table = 'MCCC_Update_Invite'
+        db_table = 'MCCC_Dir_Update'
         verbose_name_plural = 'Directory Updates'
         verbose_name ='Directory Update'
