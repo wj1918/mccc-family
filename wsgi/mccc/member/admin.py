@@ -12,6 +12,7 @@ from singledispatch import singledispatch  # pip install singledispatch
 
 from models import McccDir
 from contact.utils import create_dir_update
+from django.contrib.admin.views.main import ChangeList
 
 def prep_field(obj, field):
     """
@@ -136,6 +137,13 @@ class MemberSite(AdminSite):
     def login(self, request, extra_context=None):
         return redirect('%s?next=%s' % (reverse('home'), request.REQUEST.get('next', '')))
 
+
+class MemberChangeList(ChangeList):
+    def __init__(self, *args, **kwargs):
+        super(MemberChangeList, self).__init__(*args, **kwargs)
+        self.title = "Search member"
+
+        
 class McccDirAdmin(admin.ModelAdmin):
     list_display = ('last_nm','first_nm','chinese_nm','wf_first','wf_chinese_nm','home_phone', 'work_phone','address', 'worship')
     list_filter = ['worship']
@@ -177,8 +185,11 @@ class McccDirAdmin(admin.ModelAdmin):
             return actions
         else:
             return None
+
+    def get_changelist(self, request, **kwargs):
+        return MemberChangeList
         
 member_site = MemberSite(name='member')
-member_site.site_header = 'MCCC Online Directory'
-member_site.site_title ='MCCC Online Directory'
+member_site.site_header = 'MCCC Member Directory'
+member_site.site_title ='MCCC Member Directory'
 member_site.register(McccDir,McccDirAdmin)

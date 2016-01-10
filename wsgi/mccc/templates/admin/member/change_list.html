@@ -1,0 +1,17 @@
+{% extends "admin/change_list.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'home' %}">{% trans 'Home' %}</a>
+{% if title %} &rsaquo; {{ title }}{% endif %}
+</div>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">{{ site_header|default:_('Django administration') }}</h1>
+{% endblock %}
+
+
+{% block object-tools %}
+{% endblock %}
