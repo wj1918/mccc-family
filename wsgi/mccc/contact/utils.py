@@ -48,7 +48,6 @@ def create_dir_update(queryset):
         m.worship=o.worship
         m.first_nm2=o.wf_first
         m.chinese_nm2=o.wf_chinese_nm
-        m.dir_type=DirUpdate.COUPLE if ( o.wf_first or o.wf_chinese_nm)  else DirUpdate.SINGLE
         m.address=family.address
         m.city=family.city
         m.state=family.state
@@ -68,9 +67,9 @@ def create_dir_update(queryset):
             m.login_user_nm1=get_login_user(p1)
 
         p2=None    
-        if(o.wf_first):
+        if(o.wf_first and not o.wf_first.isspace()):
             p2=Person.objects.get(family__id=o.family_id, first=o.wf_first)
-        elif (o.wf_chinese_nm):
+        elif (o.wf_chinese_nm and not o.wf_chinese_nm.isspace()):
             p2=Person.objects.get(family__id=o.family_id, chinese=o.wf_chinese_nm)
 
         if(p2):
@@ -80,6 +79,7 @@ def create_dir_update(queryset):
             m.fellowship_nm2=p2.fellowship
             m.login_user_nm2=get_login_user(p2)
 
+        m.dir_type=DirUpdate.COUPLE if (p2)  else DirUpdate.SINGLE
         if(m.email1 or m.email2):
             m.invite_email=';'.join([x for x in (m.email1,m.email2) if x])
             token = access_token_generator.make_token() 
@@ -194,16 +194,26 @@ def save_contact(token, form):
         if dir_update.person1:    
             p1=Person.objects.get(id=dir_update.person1.id)
             if p1 and p1.cphone != form.cleaned_data['cell_phone1']:
-                    p1.cphone = form.cleaned_data['cell_phone1']
-                    changed_value["cell_phone1"]=p1.cphone
-                    p1.save()
+                p1.cphone = form.cleaned_data['cell_phone1']
+                changed_value["cell_phone1"]=p1.cphone
+            if p1 and p1.chinese != form.cleaned_data['chinese_nm1']:
+                p1.chinese = form.cleaned_data['chinese_nm1']
+                changed_value["chinese_nm1"]=p1.chinese
+            if p1:
+                p1.mccc_dir=form.cleaned_data['mccc_dir']
+                p1.save()
             
         if dir_update.person2:    
             p2=Person.objects.get(id=dir_update.person2.id)
             if p2 and p2.cphone != form.cleaned_data['cell_phone2']:
-                    p2.cphone = form.cleaned_data['cell_phone2']
-                    changed_value["cell_phone2"]=p2.cphone
-                    p2.save()
+                p2.cphone = form.cleaned_data['cell_phone2']
+                changed_value["cell_phone2"]=p2.cphone
+            if p2 and p2.chinese != form.cleaned_data['chinese_nm2']:
+                p2.chinese = form.cleaned_data['chinese_nm2']
+                changed_value["chinese_nm2"]=p2.chinese
+            if p2:
+                p2.mccc_dir=form.cleaned_data['mccc_dir']
+                p2.save()
         
         dir_update.comment=repr({"changed":changed_value, "cleaned_data":form.cleaned_data})       
         dir_update.invite_state=DirUpdate.SUBMITTED

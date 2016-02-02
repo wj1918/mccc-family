@@ -145,10 +145,10 @@ class MemberChangeList(ChangeList):
 
         
 class McccDirAdmin(admin.ModelAdmin):
-    list_display = ('last_nm','first_nm','chinese_nm','wf_first','wf_chinese_nm','home_phone', 'work_phone','address', 'worship')
+    list_display = ('last_nm','first_nm','chinese_nm','wf_first','wf_chinese_nm','home_phone', 'cell_phone','address', 'worship')
     list_filter = ['worship']
-    readonly_fields = ('family_id','last_nm','first_nm','chinese_nm','wf_first','wf_chinese_nm','home_phone', 'work_phone','address', 'worship')
-    search_fields = ('last_nm','first_nm','chinese_nm','wf_first','wf_chinese_nm','home_phone', 'work_phone','address', 'worship')
+    readonly_fields = ('family_id','last_nm','first_nm','chinese_nm','wf_first','wf_chinese_nm','home_phone', 'cell_phone','address', 'worship')
+    search_fields = ('last_nm','first_nm','chinese_nm','wf_first','wf_chinese_nm','home_phone', 'cell_phone','address', 'worship')
     ordering = ['last_nm']
 
     def has_add_permission(self, request, obj=None):
@@ -173,7 +173,7 @@ class McccDirAdmin(admin.ModelAdmin):
         'wf_first', 
         'wf_chinese_nm',
         'home_phone', 
-        'work_phone',
+        'cell_phone',
         'address', 
         'worship',
     ]

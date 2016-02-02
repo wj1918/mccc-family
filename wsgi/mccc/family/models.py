@@ -25,6 +25,9 @@ class Family(models.Model):
 
 
 class Person(models.Model):
+    YES_NO_CHOICES=[('Y','Yes'),
+         ('N','No')]
+
     def __unicode__(self):    
         list0 = [self.first, self.last]
         flist =[x for x in list0 if x is not None]
@@ -54,6 +57,7 @@ class Person(models.Model):
     memday = models.DateField(db_column='MemDay', blank=True, null=True)  # Field name made lowercase.
     comment = models.TextField(db_column='Comment', blank=True, null=True)  # Field name made lowercase.
     family = models.ForeignKey(Family,db_column='FamilyID',related_name="persons")
+    mccc_dir = models.CharField(choices=YES_NO_CHOICES,db_column='MCCC_DIR',max_length=2,blank=True, null=True, help_text="Y -- listed in MCCC directory, N -- not listed.")
 
     class Meta:
         managed = False
