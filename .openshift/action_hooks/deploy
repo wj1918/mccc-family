@@ -34,6 +34,10 @@ cp ${TEMPLATE_DIR}/signon.php.tmpl ${BUILD_DIR}/signon.php
 perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' ${BUILD_DIR}/signon.php
 cp ${BUILD_DIR}/signon.php ${PHPMYADMIN_DIR}/signon.php
 
+cp ${TEMPLATE_DIR}/google-sheet.php.tmpl ${BUILD_DIR}/google-sheet.php
+perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' ${BUILD_DIR}/google-sheet.php
+cp ${BUILD_DIR}/google-sheet.php ${PHPMYADMIN_DIR}/google-sheet.php
+
 echo "Pre-processing Django config."
 mkdir -p ${BUILD_DIR}
 cp ${TEMPLATE_DIR}/settings.py.tmpl ${BUILD_DIR}/settings.py
