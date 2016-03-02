@@ -14,13 +14,13 @@ class ChildrenSite(AdminSite):
         return redirect('%s?next=%s' % (reverse('home'), request.REQUEST.get('next', '')))
 
 class CmMasterAdmin(admin.ModelAdmin):
-    list_display = ['first_last','first_last','ssgrade','ssactive','choiractive','choirgrade','fname','lname','chinese_name','gender','grade','dob',
+    list_display = ['first_last','first_last','ssgrade','ssactive','fname','lname','chinese_name','gender','grade','dob',
     'allergies_medical_conditions_medications','fathers_english_name','fathers_chinese_name_if_available','mothers_english_name','mother_chinese_name_if_available',
     'email','street','city','state','zip','home','fathers_office','fathers_cell','mothers_office','mothers_cell','alternate_contact_name','alt_contact_main_phone',
     'altcont','mccc','group','assign','christianfather','christianmother','remarks','felly']
     search_fields = ['first_last','fname','lname','chinese_name','allergies_medical_conditions_medications','fathers_english_name','fathers_chinese_name_if_available','mothers_english_name','mother_chinese_name_if_available',
     'email','street','city','state','zip','home']
-    list_filter = ['ssactive','ssgrade','choiractive','choirgrade']
+    list_filter = ['ssactive','ssgrade','vbs_2015','vbs_2014','vbs_2013','vbs_2012','vbs_2011','vbs_2010']
     form = autocomplete_light.modelform_factory(CmMaster,exclude=[])
     
 # for the person raw_id picker widget 

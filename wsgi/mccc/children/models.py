@@ -24,8 +24,6 @@ class CmMaster(models.Model):
     ssgroup = models.CharField(max_length=100, blank=True)
     ssgrade = models.CharField(max_length=100, blank=True)
     ssactive = models.CharField(max_length=100, blank=True)
-    choiractive = models.CharField(max_length=100, blank=True)
-    choirgrade = models.CharField(max_length=100, blank=True)
     fname = models.CharField(max_length=100, blank=True)
     lname = models.CharField(max_length=100, blank=True)
     chinese_name = models.CharField(max_length=100, blank=True)
@@ -52,18 +50,18 @@ class CmMaster(models.Model):
     alt_contact_main_phone = models.CharField(max_length=100, blank=True)
     altcont = models.CharField(max_length=100, blank=True)
     mccc = models.CharField(max_length=100, blank=True)
-    number_2010 = models.CharField(db_column='2010', max_length=100, blank=True)  # Field renamed because it wasn't a valid Python identifier.
-    number_2011 = models.CharField(db_column='2011', max_length=100, blank=True)  # Field renamed because it wasn't a valid Python identifier.
-    number_2012 = models.CharField(db_column='2012', max_length=100, blank=True)  # Field renamed because it wasn't a valid Python identifier.
-    number_2013 = models.CharField(db_column='2013', max_length=100, blank=True)  # Field renamed because it wasn't a valid Python identifier.
-    number_2014 = models.CharField(db_column='2014', max_length=100, blank=True)  # Field renamed because it wasn't a valid Python identifier.
+    vbs_2010 = models.CharField(db_column='2010', max_length=100, blank=True, verbose_name="2010 VBS")  # Field renamed because it wasn't a valid Python identifier.
+    vbs_2011 = models.CharField(db_column='2011', max_length=100, blank=True, verbose_name="2011 VBS")  # Field renamed because it wasn't a valid Python identifier.
+    vbs_2012 = models.CharField(db_column='2012', max_length=100, blank=True, verbose_name="2012 VBS")  # Field renamed because it wasn't a valid Python identifier.
+    vbs_2013 = models.CharField(db_column='2013', max_length=100, blank=True, verbose_name="2013 VBS")  # Field renamed because it wasn't a valid Python identifier.
+    vbs_2014 = models.CharField(db_column='2014', max_length=100, blank=True, verbose_name="2014 VBS")  # Field renamed because it wasn't a valid Python identifier.
+    vbs_2015 = models.CharField(db_column='2015', max_length=100, blank=True, verbose_name="2015 VBS")  # Field renamed because it wasn't a valid Python identifier.
     group = models.CharField(max_length=100, blank=True)
     assign = models.CharField(max_length=100, blank=True)
     christianfather = models.CharField(max_length=100, blank=True)
     christianmother = models.CharField(max_length=100, blank=True)
     remarks = models.CharField(max_length=100, blank=True)
     felly = models.CharField(max_length=100, blank=True)
-    column_ar = models.CharField(db_column='column_AR', max_length=100, blank=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
