@@ -103,7 +103,7 @@ def send_emails(idsstr,request):
             subject,to,cc,bcc,content=parse_email(email_content)
             to_email= to if to else ui.invite_email
             try:
-                result=mail.EmailMessage(subject, content, to=[to_email], 
+                result=mail.EmailMessage(subject, content, to=to_email.split(';'), 
                     cc=[cc]if cc else [], 
                     bcc=[bcc]if bcc else [], 
                     connection=connection).send()
