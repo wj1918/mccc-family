@@ -152,6 +152,32 @@ def _(description):
     wrapped_action.short_description = description
     return wrapped_action
 
+def promote(x):
+    return {
+        'N': 'PK',
+        'PK': 'K',
+        'K': '1',
+        '1': '2',
+        '2': '3',
+        '3': '4',
+        '4': '5',
+        '5': '6',
+        '6': '7',
+        '7': '8',
+        '8': '9',
+        '9': '10',
+        '10': '11',
+        '11': '12',
+    }[x]
+
+
+def grade_promotion(modeladmin, request, queryset):
+    for child in queryset:
+        child.ssgrade=promote(child.ssgrade);
+        child.save()
+ 
+grade_promotion.short_description = "Grade Promotion"
+
 class ChildrenSite(AdminSite):
     site_header = 'Children'
     
@@ -159,7 +185,7 @@ class ChildrenSite(AdminSite):
         return redirect('%s?next=%s' % (reverse('home'), request.REQUEST.get('next', '')))
 
 class CmMasterAdmin(admin.ModelAdmin):
-    list_display = ['first_last','ssgrade','ssactive','fname','lname','chinese_name','gender','grade','dob',
+    list_display = ['first_last','ssgrade','ssactive','fname','lname','chinese_name','gender','dob',
     'allergies_medical_conditions_medications','fathers_english_name','fathers_chinese_name_if_available','mothers_english_name','mother_chinese_name_if_available',
     'email','street','city','state','zip','home','fathers_office','fathers_cell','mothers_office','mothers_cell','alternate_contact_name','alt_contact_main_phone',
     'altcont','mccc','group','assign','christianfather','christianmother','remarks','felly','vbs_2010','vbs_2011','vbs_2012','vbs_2013','vbs_2014','vbs_2015',]
@@ -167,7 +193,7 @@ class CmMasterAdmin(admin.ModelAdmin):
     'email','street','city','state','zip','home']
     list_filter = ['ssactive','ssgrade','vbs_2015','vbs_2014','vbs_2013','vbs_2012','vbs_2011','vbs_2010']
     form = autocomplete_light.modelform_factory(CmMaster,exclude=[])
-    actions = [download_as_excel("Download selected objects as Excel file"),]
+    actions = [download_as_excel("Download selected objects as Excel file"),grade_promotion,]
     download_as_excel_fields=['first_last',
        'ssgrade',
        'ssactive',
@@ -210,13 +236,6 @@ class CmMasterAdmin(admin.ModelAdmin):
        'vbs_2015',
     ]
     download_as_excel_header = True
-
-    def get_actions(self, request):
-        actions = super(CmMasterAdmin, self).get_actions(request)
-        if request.user.is_superuser:
-            return actions
-        else:
-            return None
 
     
 # for the person raw_id picker widget 
