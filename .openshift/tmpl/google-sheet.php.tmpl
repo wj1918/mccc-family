@@ -51,7 +51,7 @@ function createSchema(){
     
     foreach ($headers as $header) {
         $sql=$sql . ",\n";
-        $sql=$sql . "`" . $header . "`   varchar(100)";
+        $sql=$sql . "`" . substr($header,0,64) . "`   varchar(200)";
     }
     $sql=$sql . ")";
     echo "$sql;\n";
@@ -74,11 +74,11 @@ function importData(){
         $first=True;
         foreach ($row as $key => $value) {
             if($first){
-                $fields=$fields . "`" . addslashes($key) . "`";
+                $fields=$fields . "`" . addslashes(substr($key,0,64)) . "`";
                 $values=$values . '"' . addslashes($value) . '"';
                 $first=False;
             }else{
-                $fields= $fields . "," . "`" . addslashes($key) . "`";
+                $fields= $fields . "," . "`" . addslashes(substr($key,0,64)) . "`";
                 $values= $values . "," . '"' . addslashes($value) . '"';
             }
         }
