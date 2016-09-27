@@ -2,6 +2,8 @@
 
 function install_python2() {
     local python2_dir=${ROOT_DIR}/python2
+    msg_info "Cleanning old python and virtualenv"
+    rm -rf ${ROOT_DIR}/python2 ${ROOT_DIR}/venv2
     msg_info "Installing python $PYTHON_VERSION..."
     mkdir -p ${BUILD_DIR}
     pushd ${BUILD_DIR}
