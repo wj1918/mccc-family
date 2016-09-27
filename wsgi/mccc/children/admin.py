@@ -10,7 +10,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from children.models import CmMaster
 from family.models import Person
-import autocomplete_light
+#import autocomplete_light
 
 def prep_field(obj, field):
     """
@@ -192,7 +192,7 @@ class CmMasterAdmin(admin.ModelAdmin):
     search_fields = ['first_last','fname','lname','chinese_name','allergies_medical_conditions_medications','fathers_english_name','fathers_chinese_name_if_available','mothers_english_name','mother_chinese_name_if_available',
     'email','street','city','state','zip','home']
     list_filter = ['ssactive','ssgrade','vbs_2016','vbs_2015','vbs_2014','vbs_2013','vbs_2012','vbs_2011','vbs_2010']
-    form = autocomplete_light.modelform_factory(CmMaster,exclude=[])
+#    form = autocomplete_light.modelform_factory(CmMaster,exclude=[])
     actions = [download_as_excel("Download selected objects as Excel file"),grade_promotion,]
     download_as_excel_fields=['first_last',
        'ssgrade',

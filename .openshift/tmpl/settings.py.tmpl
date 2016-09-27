@@ -22,7 +22,7 @@ SECRET_KEY = '${OPENSHIFT_SECRET_KEY}'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = ${OPENSHIFT_DEBUG}
 
-TEMPLATE_DEBUG = ${OPENSHIFT_DEBUG}
+#TEMPLATE_DEBUG = ${OPENSHIFT_DEBUG}
 
 ALLOWED_HOSTS = ['${OPENSHIFT_ALLOWED_HOSTS}']
 
@@ -30,12 +30,15 @@ ALLOWED_HOSTS = ['${OPENSHIFT_ALLOWED_HOSTS}']
 # Application definition
 
 INSTALLED_APPS = (
+    'dal',
+    'dal_select2',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'family',
     'children',
     'member',
@@ -43,6 +46,7 @@ INSTALLED_APPS = (
     'profile',
     'contact',
     'htmltemplate',
+    'oauthemail',
 
     # theme
     "bootstrapform",
@@ -53,7 +57,6 @@ INSTALLED_APPS = (
     "eventlog",
     "metron",
     "social.apps.django_app.default",
-    'autocomplete_light',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -276,3 +279,5 @@ SOCIAL_AUTH_HOTMAIL_OAUTH2_SECRET = SOCIAL_AUTH_LIVE_SECRET
 SOCIAL_AUTH_HOTMAIL_OAUTH2_SCOPE = ["wl.emails", "wl.imap","wl.offline_access"]
 SOCIAL_AUTH_HOTMAIL_OAUTH2_HOST ='smtp-mail.outlook.com'
 SOCIAL_AUTH_HOTMAIL_OAUTH2_PORT =587
+
+SITE_ID=1

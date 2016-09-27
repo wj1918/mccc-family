@@ -3,7 +3,6 @@ Wrapper for loading templates from the db.
 """
 
 import io
-from django.template.base import TemplateDoesNotExist
 from django.template.loaders.base import Loader as BaseLoader
 from models import HtmlTemplate
 from django.template import TemplateDoesNotExist

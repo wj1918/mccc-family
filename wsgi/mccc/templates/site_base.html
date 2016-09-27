@@ -4,10 +4,17 @@
 {% load metron_tags %}
 {% load i18n %}
 
+{% block head_title_base %} 
+{% if SITE_NAME %}{{ SITE_NAME }} {% endif %}
+{% endblock %}
+
 {% block styles %}
     <link href="{% static "pinax/css/theme.css" %}" rel="stylesheet">
     <link href="{% static "css/site.css" %}" rel="stylesheet">
     {% block extra_head %}{% endblock %}
+{% endblock %}
+
+{% block site_brand %}
 {% endblock %}
 
 {% block nav %}
