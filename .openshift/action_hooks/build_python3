@@ -1,50 +1,58 @@
 #!/bin/bash
 
-function install_python() {
-    local python_dir=${ROOT_DIR}/python
-    msg_info "Installing python $PYTHON_VERSION..."
+function install_python3() {
+    local python3_dir=${ROOT_DIR}/python3
+    msg_info "Installing python $PYTHON3_VERSION..."
     mkdir -p ${BUILD_DIR}
     pushd ${BUILD_DIR}
 
-    wget http://python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz
+    wget http://python.org/ftp/python/$PYTHON3_VERSION/Python-$PYTHON3_VERSION.tar.xz
 
-    tar zxf Python-$PYTHON_VERSION.tgz
-    cd Python-$PYTHON_VERSION
-    ./configure --prefix=$python_dir
+    tar xf Python-$PYTHON3_VERSION.tar.xz
+    cd Python-$PYTHON3_VERSION
+    ./configure --prefix=$python3_dir
     make install -j$NUMBER_OF_PROCESSORS
 
-    check_status $? "Installing python $PYTHON_VERSION..."
+    check_status $? "Installing python $PYTHON3_VERSION..."
 
-    ln -s $python_dir/bin/python3 $python_dir/bin/python
+    if [ ! -e $python3_dir/bin/python ]; then
+        ln -s $python3_dir/bin/python3 $python3_dir/bin/python
+    fi
 
     popd
 }
 
 # python is already provided by OpenShift
 # so we don't need to compile and install it
-function check_python() {
-    local python_bin=${ROOT_DIR}/python/bin/python
+function check_python3() {
+    local python3_bin=${ROOT_DIR}/python3/bin/python
 
-    if [[ ! -e  ${python_bin} ]]; then
+    if [[ ! -e  ${python3_bin} ]]; then
         echo "python not installed."
-        install_python
+        install_python3
     else
-        local python_version=`${python_bin} --version 2>&1|cut -d ' ' -f2`
+        local python3_version=`${python3_bin} --version 2>&1|cut -d ' ' -f2`
 
-        if [[ "${PYTHON_VERSION}" != ${python_version} ]]; then
-            echo "python old, version: ${python_version}."
+        if [[ "${PYTHON3_VERSION}" != ${python3_version} ]]; then
+            echo "python old, version: ${python3_version}."
             install_python
         else
-            echo "python up to date, version: ${python_version}."
+            echo "python up to date, version: ${python3_version}."
         fi
     fi
 }
 
+function check_pip3() {
+# pip3 comes with python3
+    msg_info "pip3 ..."
+}
+
+
 # virtualenv is already provided by OpenShift
 # so we don't need to compile and install it
-function check_venv() {
-    local python_bin=${ROOT_DIR}/python/bin/python
-    local virtualenv_dir="$ROOT_DIR/venv"
+function check_venv3() {
+    local python3_bin=${ROOT_DIR}/python3/bin/python
+    local virtualenv_dir="$ROOT_DIR/venv3"
     
     msg_info "Checking for virtualenv..."
     if [ -d $virtualenv_dir ]; then
@@ -53,22 +61,20 @@ function check_venv() {
     fi
 
     msg_info "Creating virtualenv..."
-    ${ROOT_DIR}/python/bin/pip3 install virtualenv
-    ${ROOT_DIR}/python/bin/virtualenv --no-site-packages --python="$python_bin" $virtualenv_dir
+    ${ROOT_DIR}/python3/bin/pyvenv $virtualenv_dir
     check_status $? 'Creating virtualenv...'
 }
 
 function install_requirements3() {
     msg_info "Procesing requirements..."
+    REQUIREMENTS_FILE="$OPENSHIFT_REPO_DIR/requirements3.txt"
     if [ ! -f $REQUIREMENTS_FILE ]; then
         msg_info "Procesing requirements... not found"
         return
     fi
-
     activate_virtualenv
-    ${ROOT_DIR}/python/bin/pip3 install --use-mirrors -r $REQUIREMENTS_FILE
+    pip3 install -r $REQUIREMENTS_FILE
     check_status $? "Procesing requirements..."
-    deactivate
 }
 
 

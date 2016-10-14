@@ -27,7 +27,7 @@ LIBTOOL_VERSION='2.4.6'
 
 NODE_VERSION='0.6.20' #'0.10.26'
 
-PYTHON3_VERSION="3.4.2"
+PYTHON3_VERSION="3.5.2"
 PYTHON2_VERSION="2.7.12"
 PHPMYADMIN_VERSION="4.6.4"
 
@@ -105,7 +105,7 @@ if [ -z "$build_name" ]; then
 	# check virtual env
 	check_venv${OPENSHIFT_PYTHON_VERSION}
 	
-	install_requirements2
+	install_requirements${OPENSHIFT_PYTHON_VERSION}
 	
 	# check uwsgi
 	check_uwsgi
