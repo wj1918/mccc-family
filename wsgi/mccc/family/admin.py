@@ -14,7 +14,7 @@ from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 
 def add_link_field(target_model = None, field = '', app='', field_name='link',
-                   link_text=unicode):
+                   link_text=str):
     def add_link(cls):
         reverse_name = target_model or cls.model.__name__.lower()
         def link(self, instance):
@@ -61,7 +61,7 @@ class PersonAdmin(admin.ModelAdmin):
     def get_family_address(self, obj):
         list1 = [obj.family.address, obj.family.city, obj.family.state, obj.family.zip]
         faddress =[x for x in list1 if x is not None]
-        return u','.join(faddress).encode('utf-8').strip()
+        return ','.join(faddress).encode('utf-8').strip()
         
     get_family_address.short_description = 'Family Address'
     get_family_address.admin_order_field = 'family__address'
@@ -69,7 +69,7 @@ class PersonAdmin(admin.ModelAdmin):
     def get_family_phone(self, obj):
         list1 = [obj.family.home1, obj.family.home2, obj.family.homefax]
         fphones =[x for x in list1 if x is not None]
-        return u' '.join(fphones).encode('utf-8').strip()
+        return ' '.join(fphones).encode('utf-8').strip()
     get_family_phone.short_description = 'Family Phone'
     get_family_phone.admin_order_field = 'family__home1s'
 

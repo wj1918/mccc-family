@@ -10,6 +10,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from children.models import CmMaster
 from family.models import Person
+import collections
 #import autocomplete_light
 
 def prep_field(obj, field):
@@ -29,8 +30,8 @@ def prep_field(obj, field):
                 return ""
 
     attr = getattr(obj, field)
-    output = attr() if callable(attr) else attr
-    return unicode(output).encode('utf-8') if output is not None else ""
+    output = attr() if isinstance(attr, collections.Callable) else attr
+    return str(output).encode('utf-8') if output is not None else ""
 
 @singledispatch
 def download_as_excel(modeladmin, request, queryset):
@@ -59,7 +60,7 @@ def download_as_excel(modeladmin, request, queryset):
 
     def fname(field):
         if verbose_names:
-            return unicode(field.verbose_name).capitalize()
+            return str(field.verbose_name).capitalize()
         else:
             return field.name
 
@@ -108,7 +109,7 @@ def download_as_excel(modeladmin, request, queryset):
     
     if header:
         col_num = 0;
-        for headrname in field_names.values():
+        for headrname in list(field_names.values()):
             c = ws.cell(row=row_num + 1, column=col_num + 1)
             c.value = headrname
             col_num=col_num+1
@@ -116,7 +117,7 @@ def download_as_excel(modeladmin, request, queryset):
     for obj in queryset:
         # writer.writerow([prep_field(obj, field) for field in field_names.keys()])
         col_num = 0;
-        for field in field_names.keys():
+        for field in list(field_names.keys()):
             c = ws.cell(row=row_num + 1, column=col_num + 1)
             c.value = prep_field(obj, field)
             col_num=col_num+1
@@ -127,7 +128,7 @@ def download_as_excel(modeladmin, request, queryset):
 
 download_as_excel.short_description = "Download selected objects as Excel file"
 
-@download_as_excel.register(basestring)
+@download_as_excel.register(str)
 def _(description):
     """
     (overridden dispatcher)

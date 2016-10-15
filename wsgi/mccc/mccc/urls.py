@@ -11,7 +11,7 @@ from children.admin import children_site
 from library.admin import library_site
 from profile.admin import profile_site
 from children.urls import urlpatterns as children_urlpatterns
-from views import database;
+from .views import database;
 from contact.views import ContactUpdateView
 from contact.views import SignupConfirmView
 

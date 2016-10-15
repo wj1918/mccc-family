@@ -1,6 +1,6 @@
 import base64
 import hashlib
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from Crypto import Random
 from Crypto.Cipher import AES
 from . import settings

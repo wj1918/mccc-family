@@ -8,15 +8,15 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from models import UserProfile
+from .models import UserProfile
 from django.contrib.admin import AdminSite
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 
 from functools import update_wrapper
 from django.utils import six
-from models import ProfileFamily
-from models import ProfilePerson
+from .models import ProfileFamily
+from .models import ProfilePerson
 
 # admin site cusrom user admin
 class ProfileInline(admin.StackedInline):

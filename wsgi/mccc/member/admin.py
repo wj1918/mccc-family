@@ -2,7 +2,7 @@ import unicodecsv
 from functools import wraps
 from collections import OrderedDict
 from django.db.models import FieldDoesNotExist
-from urllib import quote
+from urllib.parse import quote
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
@@ -10,9 +10,10 @@ from django.contrib import admin
 from django.contrib.admin import AdminSite
 from singledispatch import singledispatch  # pip install singledispatch
 
-from models import McccDir
+from .models import McccDir
 from contact.utils import create_dir_update
 from django.contrib.admin.views.main import ChangeList
+import collections
 
 def prep_field(obj, field):
     """
@@ -31,8 +32,8 @@ def prep_field(obj, field):
                 return ""
 
     attr = getattr(obj, field)
-    output = attr() if callable(attr) else attr
-    return unicode(output).encode('utf-8') if output is not None else ""
+    output = attr() if isinstance(attr, collections.Callable) else attr
+    return str(output).encode('utf-8') if output is not None else ""
 
 
 @singledispatch
@@ -62,7 +63,7 @@ def download_as_csv(modeladmin, request, queryset):
 
     def fname(field):
         if verbose_names:
-            return unicode(field.verbose_name).capitalize()
+            return str(field.verbose_name).capitalize()
         else:
             return field.name
 
@@ -90,7 +91,7 @@ def download_as_csv(modeladmin, request, queryset):
 
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=%s.csv' % (
-            unicode(opts).replace('.', '_')
+            str(opts).replace('.', '_')
         )
 
     # writer = csv.writer(response)
@@ -98,15 +99,15 @@ def download_as_csv(modeladmin, request, queryset):
     
 
     if header:
-        writer.writerow(field_names.values())
+        writer.writerow(list(field_names.values()))
 
     for obj in queryset:
-        writer.writerow([prep_field(obj, field) for field in field_names.keys()])
+        writer.writerow([prep_field(obj, field) for field in list(field_names.keys())])
     return response
 
 download_as_csv.short_description = "Download selected objects as CSV file"
 
-@download_as_csv.register(basestring)
+@download_as_csv.register(str)
 def _(description):
     """
     (overridden dispatcher)

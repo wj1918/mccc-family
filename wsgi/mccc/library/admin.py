@@ -1,6 +1,6 @@
 
 from django.contrib.admin import AdminSite
-from models import McccLibrary
+from .models import McccLibrary
 from django.contrib import admin
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
