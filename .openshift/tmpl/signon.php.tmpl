@@ -59,7 +59,8 @@ $_SESSION['PMA_single_signon_password'] = $password;
 $id = session_id();
 /* Close that session */
 session_write_close();
-/* Redirect to phpMyAdmin (should use absolute URL here!) */
-header('Location: index.php');
+flush();
+/* Redirect to phpMyAdmin (use absolute URL) */
+header('Location: https://${OPENSHIFT_ALLOWED_HOSTS}/phpMyAdmin/index.php');
 
 ?>

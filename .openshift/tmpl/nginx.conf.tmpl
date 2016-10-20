@@ -146,33 +146,22 @@ http {
             alias ${OPENSHIFT_STATIC_ROOT};
         }        
 
-        location /phpMyAdmin/ {
-            index index.php;
-            root ${OPENSHIFT_RUNTIME_DIR}www;
-            location ~ \.php$ {
-                try_files $uri =404;
-                fastcgi_pass php-fpm;
-                fastcgi_index index.php;
-                fastcgi_split_path_info ^(.+?\.php)(/.*)$;
-#                rewrite ^ http://www.google.com/?q=$fastcgi_script_name last; break;
-                if (!-f ${OPENSHIFT_RUNTIME_DIR}www$fastcgi_script_name) {
-                    return 404;
-                }        
-            	fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-                fastcgi_param PATH_INFO $fastcgi_path_info;
-                include fastcgi_params;
-            }
+        location /phpMyAdmin {
+               root ${OPENSHIFT_RUNTIME_DIR}www;
+               index index.php index.html index.htm;
+               location ~ ^/phpMyAdmin/(.+\.php)$ {
+                       try_files $uri =404;
+                       root ${OPENSHIFT_RUNTIME_DIR}www;
+                       fastcgi_pass php-fpm;
+                       fastcgi_index index.php;
+                       fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                       include fastcgi_params;
+               }
+               location ~* ^/phpMyAdmin/(.+\.(jpg|jpeg|gif|css|png|js|ico|html|xml|txt))$ {
+                       root ${OPENSHIFT_RUNTIME_DIR}www;
+               }
         }
 
-        location ~ \.php$ {
-            try_files $uri =404;
-            fastcgi_pass php-fpm;
-            fastcgi_index index.php;
-            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-            fastcgi_param PATH_INFO $fastcgi_script_name;
-            include fastcgi_params;
-        }
-        
     }
 
     # opt-in to the future

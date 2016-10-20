@@ -6,6 +6,7 @@
  * cookie
  */
 $cfg['blowfish_secret'] = '${OPENSHIFT_SECRET_KEY}'; /* YOU MUST FILL IN THIS FOR COOKIE AUTH! */
+$cfg['PmaAbsoluteUri'] = 'https://${OPENSHIFT_ALLOWED_HOSTS}/phpMyAdmin/';
 
 /**
  * Servers configuration
@@ -22,7 +23,7 @@ $cfg['Servers'][$i]['auth_type'] = 'signon';
 $cfg['Servers'][$i]['host'] = '${OPENSHIFT_MYSQL_DB_HOST}';
 $cfg['Servers'][$i]['port'] = '${OPENSHIFT_MYSQL_DB_PORT}';
 $cfg['Servers'][$i]['AllowNoPassword'] = true;
-$cfg['Servers'][$i]['SignonURL'] = 'signon.php';
+$cfg['Servers'][$i]['SignonURL'] = 'https://${OPENSHIFT_ALLOWED_HOSTS}/phpMyAdmin/signon.php';
 $cfg['Servers'][$i]['SignonSession'] = 'SignonSession';
 $cfg['Servers'][$i]['SignonURL'] = '/';
 
