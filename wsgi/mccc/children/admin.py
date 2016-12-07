@@ -188,10 +188,10 @@ class CmMasterAdmin(admin.ModelAdmin):
     list_display = ['first_last','ssgrade','ssactive','fname','lname','chinese_name','gender','dob',
     'allergies_medical_conditions_medications','fathers_english_name','fathers_chinese_name_if_available','mothers_english_name','mother_chinese_name_if_available',
     'email','street','city','state','zip','home','fathers_office','fathers_cell','mothers_office','mothers_cell','alternate_contact_name','alt_contact_main_phone',
-    'altcont','mccc','group','assign','christianfather','christianmother','remarks','felly','vbs_2010','vbs_2011','vbs_2012','vbs_2013','vbs_2014','vbs_2015',]
+    'altcont','mccc','group','assign','christianfather','christianmother','remarks','felly','vbs_2010','vbs_2011','vbs_2012','vbs_2013','vbs_2014','vbs_2015','vbs_2016',]
     search_fields = ['first_last','fname','lname','chinese_name','allergies_medical_conditions_medications','fathers_english_name','fathers_chinese_name_if_available','mothers_english_name','mother_chinese_name_if_available',
     'email','street','city','state','zip','home']
-    list_filter = ['ssactive','ssgrade','vbs_2015','vbs_2014','vbs_2013','vbs_2012','vbs_2011','vbs_2010']
+    list_filter = ['ssactive','ssgrade','vbs_2016','vbs_2015','vbs_2014','vbs_2013','vbs_2012','vbs_2011','vbs_2010']
     form = autocomplete_light.modelform_factory(CmMaster,exclude=[])
     actions = [download_as_excel("Download selected objects as Excel file"),grade_promotion,]
     download_as_excel_fields=['first_last',
@@ -234,6 +234,7 @@ class CmMasterAdmin(admin.ModelAdmin):
        'vbs_2013',
        'vbs_2014',
        'vbs_2015',
+       'vbs_2016',
     ]
     download_as_excel_header = True
 
