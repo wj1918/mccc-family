@@ -191,7 +191,7 @@ class PersonAdmin(admin.ModelAdmin):
     get_family_phone.short_description = 'Family Phone'
     get_family_phone.admin_order_field = 'family__home1s'
     actions = [
-        export_excel_action("Download selected objects as Excels file",
+        export_excel_action("Download selected objects as Excel file",
             fields=[
                 ('last', 'Last Name'),
                 ('first', 'First Name'),
