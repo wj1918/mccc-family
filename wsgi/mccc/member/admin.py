@@ -145,6 +145,7 @@ class MemberChangeList(ChangeList):
 
         
 class McccDirAdmin(admin.ModelAdmin):
+    list_max_show_all = 10000
     list_display = ('last_nm','first_nm','chinese_nm','wf_first','wf_chinese_nm','home_phone', 'cell_phone','address', 'worship')
     list_filter = ['worship']
     readonly_fields = ('family_id','last_nm','first_nm','chinese_nm','wf_first','wf_chinese_nm','home_phone', 'cell_phone','address', 'worship')
