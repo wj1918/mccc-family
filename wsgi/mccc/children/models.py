@@ -61,6 +61,7 @@ class CmMaster(models.Model):
     vbs_2014 = models.CharField(db_column='2014', max_length=100, blank=True, verbose_name="2014 VBS")
     vbs_2015 = models.CharField(db_column='2015', max_length=100, blank=True, verbose_name="2015 VBS")
     vbs_2016 = models.CharField(db_column='2016', max_length=100, blank=True, verbose_name="2016 VBS")
+    vbs_2017 = models.CharField(db_column='2017', max_length=100, blank=True, verbose_name="2017 VBS")
 
     class Meta:
         managed = False
