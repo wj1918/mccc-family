@@ -13,6 +13,7 @@ from singledispatch import singledispatch  # pip install singledispatch
 from models import McccDir
 from contact.utils import create_dir_update
 from django.contrib.admin.views.main import ChangeList
+from django.template.response import TemplateResponse
 
 def prep_field(obj, field):
     """
@@ -137,6 +138,19 @@ class MemberSite(AdminSite):
     def login(self, request, extra_context=None):
         return redirect('%s?next=%s' % (reverse('home'), request.REQUEST.get('next', '')))
 
+
+    def get_urls(self):
+        from django.conf.urls import url
+        urls = super(MemberSite, self).get_urls()
+        urls += [
+            url(r'^member/download_pdf$', self.admin_view(self.download_pdf_view))
+            
+        ]
+        return urls
+
+    def download_pdf_view(self, request):
+        return TemplateResponse(request, "admin/member/download_pdf.html", {})
+        
 
 class MemberChangeList(ChangeList):
     def __init__(self, *args, **kwargs):

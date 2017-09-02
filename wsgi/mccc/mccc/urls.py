@@ -14,6 +14,7 @@ from children.urls import urlpatterns as children_urlpatterns
 from views import database;
 from contact.views import ContactUpdateView
 from contact.views import SignupConfirmView
+from .rest import router
 
 urlpatterns = patterns('',
     # Examples:
@@ -37,13 +38,19 @@ urlpatterns = patterns('',
     url(r'^oauthemail/', include('oauthemail.urls', namespace="oauthemail")),
     url(r'^t/(?P<token>[^/]+)$', ContactUpdateView.as_view(), name='update_contact'),
     url(r'^s/(?P<token>[^/]+)$', SignupConfirmView.as_view(), name='signup_confirm'),
-    
-    
-    
+    url(r'^', include(router.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 )
 
 urlpatterns += children_urlpatterns
 urlpatterns += staticfiles_urlpatterns()
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns
+
 
 admin.site.site_header = 'Administration'
 admin.site.site_title ='Site admin'

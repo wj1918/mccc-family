@@ -1,0 +1,173 @@
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+<meta charset="utf-8"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.js" type="text/javascript"></script>
+<script type="text/javascript" src="{% static 'js/pdfmake.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/vfs_fonts.js' %}"></script>
+
+<script>
+
+function doDownload(){
+    
+    $.getJSON( "/api/members", function( data ) {
+        downloadPDF(getTable(data));
+    });
+}
+
+function getTable(data){
+var tabledd= {
+					headerRows: 1,
+					widths: ['auto', 'auto', 'auto','auto','auto',70, 80,'*','auto'],
+					body: [[
+						{text: 'Last_NM', style: 'tableHeader'}, 
+						{text: 'First_NM', style: 'tableHeader'}, 
+						{text: 'CH_NM', style: 'tableHeader'},
+						{text: 'Spouse', style: 'tableHeader'}, 
+						{text: 'SP_CN', style: 'tableHeader'}, 
+						{text: 'Home_PH', style: 'tableHeader'},
+						{text: 'Cell_PH', style: 'tableHeader'},
+						{text: 'Home Address', style: 'tableHeader'}, 
+						{text: 'Worship', style: 'tableHeader'}]
+					]
+				};
+	for (var i = 0; i < data.length; i++) {
+		var d=data[i];
+		tabledd.body.push([d.last_nm,d.first_nm,
+			{text: $.trim(d.chinese_nm), style:'tableChinese'},d.wf_first,
+			{text: $.trim(d.wf_chinese_nm), style:'tableChinese'},d.home_phone,
+			{text: d.cell_phone, style:'tableCellPhone'},
+			{text: d.address, style:'tableAddress'},d.worship]);
+	}
+	return tabledd;
+
+}
+
+function downloadPDF(_table){
+	pdfMake.fonts={
+			Roboto: {
+					normal: 'Roboto-Regular.ttf',
+					bold: 'Roboto-Medium.ttf',
+					italics: 'Roboto-Italic.ttf',
+					bolditalics: 'Roboto-Italic.ttf'
+			},	
+			SimHei: {
+					normal: 'SimHei-Regular.ttf',
+					bold: 'SimHei-Regular.ttf',
+					italics: 'SimHei-Regular.ttf',
+					bolditalics: 'SimHei-Regular.ttf'
+			},
+			//SourceHanSerifCN: {
+			//		normal: 'SourceHanSerifCN-Regular.otf',
+			//}
+	};
+
+	var dd = {
+	        pageOrientation: 'landscape',
+		header: function(currentPage, pageCount, pageSize) {
+			// you can apply any logic and return any valid pdfmake element
+			return [
+				{ style: 'headerChinese', text: 'Monmouth Community Christian Church 美門華人教會通訊録'}
+			]
+		},
+		footer: function(currentPage, pageCount) {
+			var d = new Date();
+			var curr_date = d.getDate();
+			var curr_month = d.getMonth() + 1; //Months are zero based
+			var curr_year = d.getFullYear();
+			var dtstr=curr_year+ "-"+curr_month + "-" + curr_date ;
+			return [{style:"footer", 
+					text: dtstr+' All information for MCCC use only 所有資訊僅限美門教會使用 Page '+ currentPage.toString() + ' of ' + pageCount}
+				]
+		},
+
+		content: [
+			{
+				style: 'tableExample',
+				table: _table,
+				layout: {
+					hLineWidth: function (i, node) {
+						return (i === 0 || i === node.table.body.length) ? 2 : 1;
+					},
+					vLineWidth: function (i, node) {
+						return (i === 0 || i === node.table.widths.length) ? 2 : 1;
+					},
+					hLineColor: function (i, node) {
+						return (i === 0 || i === node.table.body.length) ? 'black' : 'gray';
+					},
+					vLineColor: function (i, node) {
+						return (i === 0 || i === node.table.widths.length) ? 'black' : 'gray';
+					},
+					// paddingLeft: function(i, node) { return 4; },
+					// paddingRight: function(i, node) { return 4; },
+					// paddingTop: function(i, node) { return 2; },
+					// paddingBottom: function(i, node) { return 2; },
+					// fillColor: function (i, node) { return null; }
+					fillColor: function (i, node) { return (i === 0) ?  '#CCCCCC' : null; }
+				}
+			}			
+		],
+		styles: {
+			headerChinese: {
+				font: 'SimHei',
+				bold: true,
+				alignment:"center",
+				margin: [0, 10, 0, 0],
+			},
+			tableExample: {
+				fontSize: 11,
+			//	margin: [0, 5, 0, 15],
+				noWrap: true
+			},
+			tableChinese: {
+				font: 'SimHei',
+			},
+			tableAddress: {
+				noWrap: false,
+				fontSize: 9,
+			},
+			tableCellPhone: {
+				noWrap: false
+			},
+			tableHeader: {
+				bold: true,
+				fontSize: 11,
+				color: 'black'
+			},
+			footer:{
+				font: 'SimHei',
+				alignment:"center",
+				margin: [0, 10, 0, 0],
+			}
+			
+		},
+		//defaultStyle: {
+		//	font: 'Roboto'
+		//}		
+	}
+
+	pdfMake.createPdf(dd).download('MCCCDir.pdf');
+}
+
+doDownload();
+
+</script>
+
+</head>
+
+<body>
+
+<!--Test PDF Make</h2>
+
+<button type="button"  onclick="doDownload();">Click Here To Download the PDF</button-->
+
+
+
+</body>
+
+</html> 
+
+
+{% endblock %}

@@ -54,6 +54,8 @@ INSTALLED_APPS = (
     "metron",
     "social.apps.django_app.default",
     'autocomplete_light',
+    'rest_framework',
+    # 'debug_toolbar',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -64,6 +66,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+#    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = '${OPENSHIFT_DJANGO_PROJECT_NAME}.urls'
@@ -276,3 +279,16 @@ SOCIAL_AUTH_HOTMAIL_OAUTH2_SECRET = SOCIAL_AUTH_LIVE_SECRET
 SOCIAL_AUTH_HOTMAIL_OAUTH2_SCOPE = ["wl.emails", "wl.imap","wl.offline_access"]
 SOCIAL_AUTH_HOTMAIL_OAUTH2_HOST ='smtp-mail.outlook.com'
 SOCIAL_AUTH_HOTMAIL_OAUTH2_PORT =587
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+}
+
+# def show_toolbar(request):
+#     return DEBUG
+# DEBUG_TOOLBAR_CONFIG = {
+#     "SHOW_TOOLBAR_CALLBACK" : show_toolbar,
+# }

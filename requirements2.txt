@@ -12,3 +12,4 @@ unicodecsv
 pycrypto==2.6.1
 openpyxl==2.3.1
 django-autocomplete-light==2.2.10
+djangorestframework==3.6.4

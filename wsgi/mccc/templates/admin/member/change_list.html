@@ -14,4 +14,21 @@
 
 
 {% block object-tools %}
+
+
+    {% block download-pdf %}
+    
+        <script>
+            function iframe_download_pdf(){
+                $('body').append('<iframe src="/member/member/download_pdf"></iframe>');
+            }
+                
+            $( document ).ready(function() {
+                $("#toolbar div").append('<input type="button" value="Download PDF" onclick="iframe_download_pdf();" style="float: right;">');
+            });
+        
+        </script>
+    
+    {% endblock %}
+
 {% endblock %}
