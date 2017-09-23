@@ -8,10 +8,10 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import Http404
 
-from social.utils import setting_name, module_member
-from social.exceptions import MissingBackend
-from social.strategies.utils import get_strategy
-from social.backends.utils import get_backend
+from social_core.utils import setting_name, module_member
+from social_core.exceptions import MissingBackend
+from social_core.utils import get_strategy
+from social_core.backends.utils import get_backend
 from .models import EmailSession
 from requests.exceptions import HTTPError 
 
@@ -24,9 +24,9 @@ OAUTHEMAIL_BACKENDS = [
 """
 BACKENDS = settings.OAUTHEMAIL_BACKENDS
 STRATEGY = getattr(settings, setting_name('STRATEGY'),
-                   'social.strategies.django_strategy.DjangoStrategy')
+                   'social_django.strategy.DjangoStrategy')
 STORAGE = getattr(settings, setting_name('STORAGE'),
-                  'social.apps.django_app.default.models.DjangoStorage')
+                  'social_django.models.DjangoStorage')
 Strategy = module_member(STRATEGY)
 Storage = module_member(STORAGE)
 

@@ -13,7 +13,7 @@ urlpatterns = patterns('',
 
 from django.conf import settings
 from django.conf.urls import patterns, url
-from social.utils import setting_name
+from social_django.utils import setting_name
 
 extra = getattr(settings, setting_name('TRAILING_SLASH'), True) and '/' or ''
 
